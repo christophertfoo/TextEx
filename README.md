@@ -13,4 +13,4 @@ of the students!
 For the developers, TextEx currently models the data types using 4 models.  The relationships between
 these models may be seen in the graph below which uses Crow's Foot notation.
 
-![Model Graph]()
+![Model Graph](https://raw.github.com/christophertfoo/TextEx/master/images/BookExchange.png)
