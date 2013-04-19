@@ -1,12 +1,34 @@
+/*
+ *   Copyright (C) 2013  Christopher Foo
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import play.data.validation.Constraints.Min;
+import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
+import play.data.validation.ValidationError;
 import play.db.ebean.Model;
-import com.avaje.ebean.validation.Range;
 import controllers.Condition;
 
 /**
@@ -27,49 +49,62 @@ public class Offer extends Model {
    * The row ID number and primary key of this {@link Offer}.
    */
   @Id
-  public Long id;
+  private Long primaryKey;
+
+  /**
+   * The natural ID of this {@link Offer}.
+   */
+  @Required
+  @MinLength(0)
+  @Column(unique = true)
+  private String offerId;
 
   /**
    * The {@link Student} who submitted this {@link Offer}.
    */
   @Required
-  @ManyToOne(cascade = CascadeType.ALL)
-  public Student student;
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Student student;
 
   /**
    * The {@link Book} that is for sale.
    */
   @Required
-  @ManyToOne(cascade = CascadeType.ALL)
-  public Book book;
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Book book;
 
   /**
    * The current {@link Condition} of the {@link Book}(s).
    */
-  public Condition condition;
+  @Required
+  private Condition condition;
 
   /**
    * The asking price of the seller.
    */
-  @Range(min = 0)
-  public double price;
+  @Required
+  private double price;
 
   /**
    * The number of {@link Book}s for sale.
    */
-  @Range(min = 0)
-  public int quantity;
+  @Required
+  @Min(1)
+  private int quantity;
 
   /**
    * Creates a new {@link Offer} with the given values.
    * 
+   * @param offerId The natural ID of the Offer.
    * @param student The {@link Student} who submitted the Offer.
    * @param book The {@link Book} for sale.
    * @param condition The {@link Condition} of the Book(s).
    * @param price The asking price for the Book(s).
    * @param quantity The number of Books for sale.
    */
-  public Offer(Student student, Book book, Condition condition, double price, int quantity) {
+  public Offer(String offerId, Student student, Book book, Condition condition, double price,
+      int quantity) {
+    this.offerId = offerId;
     this.student = student;
     this.book = book;
     this.condition = condition;
@@ -84,6 +119,53 @@ public class Offer extends Model {
    */
   public static Finder<Long, Offer> find() {
     return new Finder<>(Long.class, Offer.class);
+  }
+
+  /**
+   * Validates the fields of this {@link Offer}.
+   * 
+   * @return A {@link List} of {@link ValidationError}s describing the problems with this Offer or
+   * null if there are no errors.
+   */
+  public List<ValidationError> validate() {
+    List<ValidationError> errors = new ArrayList<>();
+    if (Offer.find().where().eq("offerId", this.offerId).findUnique() != null) {
+      errors.add(new ValidationError("AlreadyExists", String.format(
+          "An offer with ID '%s' already exists in the database.", this.offerId)));
+    }
+
+    if (this.price < 0) {
+      errors.add(new ValidationError("InvalidPrice", String.format(
+          "The price of the offer must be > than 0.  Given: %f", this.price)));
+    }
+    return (errors.size() == 0) ? null : errors;
+  }
+
+  /**
+   * Returns the {@link String} representation of this {@link Offer}.
+   */
+  @Override
+  public String toString() {
+    return String.format("[Offer %s %s %s %s %f %d]", this.offerId, this.student.toString(),
+        this.book.toString(), this.condition.toString(), this.price, this.quantity);
+  }
+
+  /**
+   * Gets the natural ID of this {@link Offer}.
+   * 
+   * @return The natural ID of this Offer.
+   */
+  public String getOfferId() {
+    return this.offerId;
+  }
+
+  /**
+   * Sets the natural ID of this {@link Offer}.
+   * 
+   * @param offerId The new natural ID of this Offer.
+   */
+  public void setOfferId(String offerId) {
+    this.offerId = offerId;
   }
 
   /**
@@ -141,12 +223,12 @@ public class Offer extends Model {
   }
 
   /**
-   * Gets the {@link #id} number of this {@link Offer}.
+   * Gets the {@link #primaryKey} number of this {@link Offer}.
    * 
    * @return The id number of this Offer.
    */
-  public Long getId() {
-    return this.id;
+  public Long getPrimaryKey() {
+    return this.primaryKey;
   }
 
   /**
@@ -159,11 +241,29 @@ public class Offer extends Model {
   }
 
   /**
+   * Sets the {@link #student} who submitted this {@link Offer}.
+   * 
+   * @param student The new student.
+   */
+  public void setStudent(Student student) {
+    this.student = student;
+  }
+
+  /**
    * Gets the {@link #book} that is for sale in this {@link Offer}.
    * 
    * @return The book for sale.
    */
   public Book getBook() {
     return this.book;
+  }
+
+  /**
+   * Sets the {@link #book} that is for sale in this {@link Offer}.
+   * 
+   * @param book The new book.
+   */
+  public void setBook(Book book) {
+    this.book = book;
   }
 }

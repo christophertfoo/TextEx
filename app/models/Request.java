@@ -1,13 +1,35 @@
+/*
+ *   Copyright (C) 2013  Christopher Foo
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import com.avaje.ebean.validation.Range;
-import controllers.Condition;
+import play.data.validation.ValidationError;
+import play.data.validation.Constraints.Min;
+import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import controllers.Condition;
 
 /**
  * A {@link Model} representing a request to buy a {@link Book}.
@@ -27,49 +49,62 @@ public class Request extends Model {
    * The row ID number and primary key of this {@link Request}.
    */
   @Id
-  public Long id;
+  private Long primaryKey;
+
+  /**
+   * The natural ID of this {@link Request}.
+   */
+  @Required
+  @MinLength(0)
+  @Column(unique = true)
+  private String requestId;
 
   /**
    * The {@link Student} who submitted this {@link Request}.
    */
   @Required
-  @ManyToOne(cascade = CascadeType.ALL)
-  public Student student;
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Student student;
 
   /**
    * The {@link Book} that this {@link Request} is asking for.
    */
   @Required
-  @ManyToOne(cascade = CascadeType.ALL)
-  public Book book;
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Book book;
 
   /**
    * The target {@link Condition} of the {@link Book}. Defaults to null if not provided.
    */
-  public Condition condition;
+  private Condition condition;
 
   /**
    * The target price of the {@link Book}.
    */
-  @Range(min = 0)
-  public double price;
+  @Required
+  @Min(0)
+  private double price;
 
   /**
    * The number of {@link Book}s to be purchased.
    */
-  @Range(min = 0)
-  public int quantity;
+  @Required
+  @Min(0)
+  private int quantity;
 
   /**
    * Creates a new {@link Request} with the given values.
    * 
+   * @param requestId The natural ID of the Request.
    * @param student The {@link Student} who posted the Request.
    * @param book The {@link Book} to be purchased.
    * @param price The target price of the Book(s).
    * @param quantity The number Books to purchase.
    * @param condition The desired {@link Condition} of the Books.
    */
-  public Request(Student student, Book book, double price, int quantity, Condition condition) {
+  public Request(String requestId, Student student, Book book, double price, int quantity,
+      Condition condition) {
+    this.requestId = requestId;
     this.student = student;
     this.book = book;
     this.condition = condition;
@@ -80,13 +115,14 @@ public class Request extends Model {
   /**
    * Creates a new {@link Request} with the given values. Uses the default condition.
    * 
+   * @param requestId The natural ID of the Request.
    * @param student The {@link Student} who posted the Request.
    * @param book The {@link Book} to be purchased.
    * @param price The target price of the Book(s).
    * @param quantity The number Books to purchase.
    */
-  public Request(Student student, Book book, double price, int quantity) {
-    this(student, book, price, quantity, null);
+  public Request(String requestId, Student student, Book book, double price, int quantity) {
+    this(requestId, student, book, price, quantity, null);
   }
 
   /**
@@ -99,12 +135,60 @@ public class Request extends Model {
   }
 
   /**
-   * Gets the {@link #id} number of this {@link Request}.
+   * Validates the fields of this {@link Offer}.
+   * 
+   * @return A {@link List} of {@link ValidationError}s describing the problems with this Offer or
+   * null if there are no errors.
+   */
+  public List<ValidationError> validate() {
+    List<ValidationError> errors = new ArrayList<>();
+    if (Request.find().where().eq("requestId", this.requestId).findUnique() != null) {
+      errors.add(new ValidationError("AlreadyExists", String.format(
+          "An request with ID '%s' already exists in the database.", this.requestId)));
+    }
+
+    if (this.price < 0) {
+      errors.add(new ValidationError("InvalidPrice", String.format(
+          "The price of the request must be > than 0.  Given: %f", this.price)));
+    }
+    return (errors.size() == 0) ? null : errors;
+  }
+
+  /**
+   * Returns the {@link String} representation of this {@link Request}.
+   */
+  @Override
+  public String toString() {
+    return String.format("[Request %s %s %s %s %f %d]", this.requestId, this.student.toString(),
+        this.book.toString(), (this.condition == null) ? "NULL" : this.condition.toString(),
+        this.price, this.quantity);
+  }
+
+  /**
+   * Gets the {@link #primaryKey} number of this {@link Request}.
    * 
    * @return The id number of this Request.
    */
-  public Long getId() {
-    return this.id;
+  public Long getPrimaryKey() {
+    return this.primaryKey;
+  }
+
+  /**
+   * Gets the natural ID of this {@link Request}.
+   * 
+   * @return The current natural ID of this Request.
+   */
+  public String getRequestId() {
+    return this.requestId;
+  }
+
+  /**
+   * Sets the natural ID of this {@link Request}.
+   * 
+   * @param requestId The new natural ID.
+   */
+  public void setRequestId(String requestId) {
+    this.requestId = requestId;
   }
 
   /**
@@ -113,7 +197,16 @@ public class Request extends Model {
    * @return The student show submitted this Request.
    */
   public Student getStudent() {
-    return student;
+    return this.student;
+  }
+
+  /**
+   * Sets the {@link #student} who submitted this {@link Request}.
+   * 
+   * @param student The new student.
+   */
+  public void setStudent(Student student) {
+    this.student = student;
   }
 
   /**
@@ -122,7 +215,16 @@ public class Request extends Model {
    * @return The book to be purchased.
    */
   public Book getBook() {
-    return book;
+    return this.book;
+  }
+
+  /**
+   * Sets the {@link #book} to be purchased.
+   * 
+   * @param book The new book.
+   */
+  public void setBook(Book book) {
+    this.book = book;
   }
 
   /**
