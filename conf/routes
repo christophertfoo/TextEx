@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+POST    /                           controllers.Application.login()
 
 GET     /books                      controllers.Book.index()
 GET     /books/:isbn                controllers.Book.details(isbn: String)
@@ -25,5 +26,14 @@ GET     /requests/:requestId        controllers.Request.details(requestId: Strin
 POST    /requests                   controllers.Request.newRequest()
 DELETE  /requests/:requestId        controllers.Request.delete(requestId: String)
 
+GET     /register                   controllers.Application.register()
+POST    /register                   controllers.Student.newStudent()
+POST    /register/login             controllers.Application.login()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /webjars/*file              controllers.WebJarAssets.at(file)
+
+# Map Bootstrap images
+#GET     /assets/img/glyphicons-halflings.png            controllers.Assets.at(path="/public", file="/images/glyphicons-halflings.png")
+#GET     /assets/img/glyphicons-halflings-white.png      controllers.Assets.at(path="/public", file="/images/glyphicons-halflings-white.png")

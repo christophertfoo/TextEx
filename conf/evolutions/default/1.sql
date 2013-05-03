@@ -45,6 +45,7 @@ create table student (
   first_name                varchar(255),
   last_name                 varchar(255),
   email                     varchar(255),
+  password                  varchar(255),
   constraint uq_student_student_id unique (student_id),
   constraint pk_student primary key (primary_key))
 ;

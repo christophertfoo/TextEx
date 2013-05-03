@@ -18,9 +18,12 @@
 package controllers;
 
 import java.util.List;
+import play.data.DynamicForm;
 import play.data.Form;
+import play.libs.Crypto;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.register;
 
 /**
  * The {@link Controller} for the {@link models.Student} type.
@@ -61,12 +64,13 @@ public class Student extends Controller {
   public static Result newStudent() {
     Form<models.Student> studentForm = Form.form(models.Student.class).bindFromRequest();
     if (studentForm.hasErrors()) {
-      return badRequest(Helpers.generateErrorString(studentForm));
+      return badRequest(register.render(null, new DynamicForm(), false, studentForm, true, false));
     }
 
     models.Student student = studentForm.get();
+    student.setPassword(Crypto.encryptAES(student.getPassword()));
     student.save();
-    return ok(student.toString());
+    return ok(register.render(null, new DynamicForm(), false, studentForm, false, true));
   }
 
   /**

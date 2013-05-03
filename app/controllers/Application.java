@@ -17,9 +17,12 @@
 
 package controllers;
 
+import play.data.DynamicForm;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
+import views.html.register;
 
 /**
  * The main {@link Controller} for the TextEx application.
@@ -35,7 +38,19 @@ public class Application extends Controller {
    * @return A 200 {@link Status} with the default top level page.
    */
   public static Result index() {
-    return ok(index.render("Your new application is ready."));
+    return ok(index.render(null, new DynamicForm(), false));
+  }
+  
+  public static Result login() {
+    DynamicForm loginForm = Form.form().bindFromRequest();
+    if(!loginForm.get("email").equals("test@hawaii.edu") && !loginForm.get("password").equals("password")){
+      return badRequest(index.render(null, loginForm, true));
+    }
+    return ok(index.render(new models.Student("tet", "test", "student", "test@hawaii.edu", "password"), new DynamicForm(), false));
+  }
+  
+  public static Result register() {
+    return ok(views.html.register.render(null, new DynamicForm(), false, new Form<models.Student>(models.Student.class), false, false));
   }
 
 }

@@ -29,6 +29,7 @@ import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
 import play.data.validation.ValidationError;
 import play.db.ebean.Model;
+import play.libs.Crypto;
 
 /**
  * A {@link Model} representing a student.
@@ -80,6 +81,10 @@ public class Student extends Model {
   @MinLength(1)
   private String email;
 
+  @Required
+  @MinLength(value = 10)
+  private String password;
+
   /**
    * The {@link Request}s submitted by this {@link Student}.
    */
@@ -100,11 +105,12 @@ public class Student extends Model {
    * @param lastName The last name of the Student.
    * @param email The email address of the Student.
    */
-  public Student(String studentId, String firstName, String lastName, String email) {
+  public Student(String studentId, String firstName, String lastName, String email, String password) {
     this.studentId = studentId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
+    this.password = password;
   }
 
   /**
@@ -255,5 +261,13 @@ public class Student extends Model {
    */
   public void setStudentId(String studentId) {
     this.studentId = studentId;
+  }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 }

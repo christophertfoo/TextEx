@@ -188,7 +188,7 @@ public class ControllerTest {
 
     // Test GET /students on a database containing a single student.
     String studentId = "Student-01";
-    Student student = new Student(studentId, "Test", "Student", "test@hawaii.edu");
+    Student student = new Student(studentId, "Test", "Student", "test@hawaii.edu", "password");
     student.save();
     result = callAction(controllers.routes.ref.Student.index());
     assertTrue("One student", contentAsString(result).contains(studentId));
@@ -207,6 +207,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     FakeRequest request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -218,6 +219,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -228,6 +230,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -239,6 +242,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -250,6 +254,7 @@ public class ControllerTest {
     studentData.put("firstName", "");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -260,6 +265,7 @@ public class ControllerTest {
     studentData.put("studentId", "Student-03");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -271,6 +277,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "password");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -281,6 +288,7 @@ public class ControllerTest {
     studentData.put("studentId", "Student-03");
     studentData.put("firstName", "Some");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -292,6 +300,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "bademail");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -303,6 +312,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "");
+    studentData.put("password", "password");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -313,10 +323,34 @@ public class ControllerTest {
     studentData.put("studentId", "Student-03");
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
     assertEquals("Create student with missing email fails", BAD_REQUEST, status(result));
+    
+    // Test POST /students (too short password)
+    studentData.clear();
+    studentData.put("studentId", "Student-03");
+    studentData.put("firstName", "Some");
+    studentData.put("lastName", "Body");
+    studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "pass");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(studentData);
+    result = callAction(controllers.routes.ref.Student.newStudent(), request);
+    assertEquals("Create student with short password fails", BAD_REQUEST, status(result));
+    
+    // Test POST /students (missing password)
+    studentData.clear();
+    studentData.put("studentId", "Student-03");
+    studentData.put("firstName", "Some");
+    studentData.put("lastName", "Body");
+    studentData.put("email", "body@hawaii.edu");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(studentData);
+    result = callAction(controllers.routes.ref.Student.newStudent(), request);
+    assertEquals("Create student with missing password fails", BAD_REQUEST, status(result));
 
     // Test DELETE /students/Student-01 (a valid studentId)
     result = callAction(controllers.routes.ref.Student.delete(studentId));
@@ -337,7 +371,7 @@ public class ControllerTest {
     assertTrue("Empty offers", contentAsString(result).contains("No offers"));
 
     // Test GET /offers on a database containing a single offer.
-    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu");
+    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu", "password");
     Book book = new Book("11111-11-111", "Test Book", 20.99);
     student.save();
     book.save();
@@ -551,7 +585,7 @@ public class ControllerTest {
     assertTrue("Empty requests", contentAsString(result).contains("No requests"));
 
     // Test GET /requests on a database containing a single request.
-    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu");
+    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu", "password");
     Book book = new Book("11111-11-111", "Test Book", 20.99);
     student.save();
     book.save();

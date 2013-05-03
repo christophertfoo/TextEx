@@ -1,7 +1,39 @@
-@(message: String)
+@(student: models.Student, loginForm: DynamicForm, loginFail: Boolean)
 
-@main("Welcome to Play 2.1") {
+@main("Welcome to TextEx", "Welcome to TextEx!", student, loginForm, loginFail) {
     
-    @play20.welcome(message, style = "Java")
+
+  <!-- Body Content -->
+  <div class="row-fluid landing-top-row">
+    <div class="span6 well">
+      <h2>Remove the Middle Man</h2>
+      <p class="lead">TextEx removes the bookstore middle man by helping students buy and sell
+        textbooks directly to and from each other. Now the book store cannot take
+        a cut from your resale! 100% of the sale goes back to you!</p>
+    </div>
+    <div class="span6 well">
+      <h2>Examine the Marketplace at a Glance</h2>
+      <p class="lead">The current market information for each book is presented in an intuitive,
+        user-friendly format. All book offers and requests are presented in a simple
+        tabular format with sorting capabilities to help you find that ideal copy
+        with the click of a few buttons.</p>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span6 well">
+      <h2>Name Your Own Price</h2>
+      <p class="lead">Sellers can name their own price to match the current demand. Now it is
+        the students who dictate the market price of each textbook, not the publisher.</p>
+      <p
+      class="lead">Buyers can also list how much they are willing to pay so that they can
+        have their say in the market too.</p>
+    </div>
+    <div class="span6 well">
+      <h2>Transactions Made Easy</h2>
+      <p class="lead">Once you have found the perfect match, contact the buyer and seller within
+        seconds using our e-mail tool.</p>
+    </div>
+  </div>
+</div>
     
 }
