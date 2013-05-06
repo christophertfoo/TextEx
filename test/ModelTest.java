@@ -67,8 +67,8 @@ public class ModelTest {
   @Test
   public void testModel() {
     // Create 2 Books and 2 Students
-    Book book1 = new Book("123412321", "Test Book 1", 50.32);
-    Book book2 = new Book("934323421", "Test Book 2", 100.99, 4);
+    Book book1 = new Book("123412321", "Test Book 1", "Dude", "UHM Publishing", 50.32);
+    Book book2 = new Book("934323421", "Test Book 2", "Chick", "UHM Publishing", 100.99, 4);
     Student student1 = new Student("Student-01", "Tester", "1", "test1@hawaii.edu", "password");
     Student student2 = new Student("Student-02", "Tester", "2", "test2@hawaii.edu", "password");
 

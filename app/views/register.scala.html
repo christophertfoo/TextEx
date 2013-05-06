@@ -10,7 +10,7 @@ Form[models.Student], registerFail: Boolean, registerSucceed: Boolean)
 <div class="row-fluid landing-top-row">
   <div class="controls control-group">
     <div
-      class="alert @if(!registerFail && !registerSucceed) {hide} @if(registerFail) {alert-error} @if(registerSucceed){alert-success}">
+      class="alert @if(!registerFail && !registerSucceed) {hide} @if(registerFail) {alert-error} @if(registerSucceed){alert-success}" id="messageAlert">
       @if(registerFail){There are errors in the form.} @if(registerSucceed){Successfully
       registered!}
       <button type="button" class="close" data-dismiss="alert">x</button>
@@ -22,7 +22,7 @@ Form[models.Student], registerFail: Boolean, registerSucceed: Boolean)
   @helper.inputText(registerForm("studentId"), '_label -> "User Name", 'id -> "userName")
   @helper.inputText(registerForm("email"), '_label -> "E-Mail", 'id -> "email")
   @helper.inputPassword(registerForm("password"), '_label -> "Password", 'id -> "password")
-  @helper.inputPassword(registerForm("password"), '_label -> "Confirm Password", 'id -> "confirmPassword", 'name -> "confirmPassword")
+  @helper.inputPassword(registerForm("confirmPassword"), '_label -> "Confirm Password", 'id -> "confirmPassword", 'name -> "confirmPassword")
   <div class="controls control-group">
     <input type="submit" class="btn btn-primary" id="registerSubmit">
   </div>

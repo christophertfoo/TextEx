@@ -66,7 +66,7 @@ public class ControllerTest {
 
     // Test GET /books on a database containing a single book.
     String isbn = "11111-11-111";
-    Book book = new Book(isbn, "Test Book", 20.99);
+    Book book = new Book(isbn, "Test Book", "Dude", "Awesome Publishing", 20.99);
     book.save();
     result = callAction(controllers.routes.ref.Book.index());
     assertTrue("One book", contentAsString(result).contains(isbn));
@@ -372,7 +372,7 @@ public class ControllerTest {
 
     // Test GET /offers on a database containing a single offer.
     Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu", "password");
-    Book book = new Book("11111-11-111", "Test Book", 20.99);
+    Book book = new Book("11111-11-111", "Test Book", "Lady", "Okay Publishing", 20.99);
     student.save();
     book.save();
     
@@ -586,7 +586,7 @@ public class ControllerTest {
 
     // Test GET /requests on a database containing a single request.
     Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu", "password");
-    Book book = new Book("11111-11-111", "Test Book", 20.99);
+    Book book = new Book("11111-11-111", "Test Book", "Dude", "Awesome Publishing", 20.99);
     student.save();
     book.save();
     

@@ -1,0 +1,83 @@
+@(student: models.Student, loginForm: DynamicForm, loginFail: Boolean, searchForm:
+DynamicForm, books: List[models.Book])
+
+@import helper._
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main("Browse Books",
+"Browse Books", student, loginForm, loginFail) {
+ <script src="@routes.Assets.at("javascripts/browsebooks.js")" type="text/javascript"></script>
+ <div class="row-fluid">
+    <div class="span3 well">
+      <h2>Search for Book</h2>
+
+      @helper.form(action = routes.Book.search(), 'id -> "registerForm") {
+      @helper.inputText(searchForm("isbn"), '_label -> "ISBN", 'id -> "isbn")
+      @helper.inputText(searchForm("name"), '_label -> "Title", 'id -> "title")
+      @helper.inputText(searchForm("authors"), '_label -> "Authors", 'id -> "authors")
+      @helper.inputText(searchForm("publisher"), '_label -> "Publisher", 'id -> "publisher")
+      @helper.inputText(searchForm("edition"), '_label -> "Edition", 'id -> "price")
+      @helper.inputText(searchForm("price"), '_label -> "Price", 'id -> "price")
+  
+      <button type="submit" class="btn btn-primary" id="searchSubmit"><i class="icon-search icon-white"></i> Search</button>
+      }
+    </div>
+    <div class="span9">
+      <div>
+        <h2>Search Results</h2>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ISBN #
+              <button class="btn btn-primary btn-sort" onclick="BrowseBooks.sortClicked(event);"
+              id="resultsIsbn">
+                <i class="icon-arrow-down icon-white" onclick="BrowseBooks.sortIconClicked(event);"
+                id="resultsIsbnIcon"></i> 
+              </button>
+            </th>
+            <th>Title
+              <button class="btn btn-sort" id="resultsTitle" onclick="BrowseBooks.sortClicked(event);">
+                <i class="icon-arrow-down" id="resultsTitleIcon" onclick="BrowseBooks.sortIconClicked(event);"></i> 
+              </button>
+            </th>
+            <th>Authors
+              <button class="btn btn-sort" id="resultsAuthors" onclick="BrowseBooks.sortClicked(event);">
+                <i class="icon-arrow-down" id="resultsAuthorsIcon" onclick="BrowseBooks.sortIconClicked(event);"></i> 
+              </button>
+            </th>
+            <th>Edition
+              <button class="btn btn-sort" id="resultsEdition" onclick="BrowseBooks.sortClicked(event);">
+                <i class="icon-arrow-down" id="resultsEditionIcon" onclick="BrowseBooks.sortIconClicked(event);"></i> 
+              </button>
+            </th>
+            <th>Base Price
+              <button class="btn btn-sort" id="resultsBasePrice" onclick="BrowseBooks.sortClicked(event);">
+                <i class="icon-arrow-down" id="resultsBasePriceIcon" onclick="BrowseBooks.sortIconClicked(event);"></i> 
+              </button>
+            </th>
+            <th>Publisher
+              <button class="btn btn-sort" id="resultsPublisher" onclick="BrowseBooks.sortClicked(event);">
+                <i class=" icon-arrow-down " id="resultsPublisherIcon" onclick="BrowseBooks.sortIconClicked(event);">  </i> 
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+        @if(books != null) {
+	        @for(book <- books) {
+	        <tr>
+	          <td>@book.getIsbn()</td>
+	          <td><a href="@routes.Book.details(book.getIsbn)">@book.getName()</a></td>
+	          <td>@book.getAuthors()</td>
+	          <td>@book.getPublisher()</td>
+	          <td>@book.getEdition()</td>
+	          <td>@book.getPrice()</td>
+	        </tr>
+	        }
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

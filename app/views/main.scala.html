@@ -63,14 +63,16 @@
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-          </a> <a class="brand" href="#">TextEx</a>
+          </a> <a class="brand">TextEx</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="@routes.Application.index()" class="active">Home</a></li>
-              <li><a href="#">Browse Books</a></li> @if(student != null) {
+              <li class="active"><a href="@routes.Application.index()" class="active" id="homeNav">Home</a></li>
+              <li><a href="@routes.Application.search()">Browse Books</a></li>
+              @if(student != null) {
               <!-- Will be shown when logged in -->
               <li><a href="#">Add Book</a></li>
-              <li><a href="#">My Offers / Requests</a></li> }
+              <li><a href="#">My Offers / Requests</a></li>
+              }
             </ul>
             @if(student == null) { <a id="signinButton" class="btn btn-primary pull-right" role="button" data-toggle="modal" href="#signin">Sign In</a> } else {
             <p class="logged-in-message pull-right">@("Logged in as: " + student.getFirstName() + " " + student.getLastName()) &nbsp; &nbsp; <a id="logoutButton" class="btn btn-primary" href="#">Log Out</a></p>

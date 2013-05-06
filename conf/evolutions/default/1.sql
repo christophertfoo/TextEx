@@ -9,6 +9,8 @@ create table book (
   name                      varchar(255),
   edition                   integer,
   price                     double,
+  authors                   varchar(255),
+  publisher                 varchar(255),
   constraint uq_book_isbn unique (isbn),
   constraint pk_book primary key (primary_key))
 ;

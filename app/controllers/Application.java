@@ -23,6 +23,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
 import views.html.register;
+import views.html.search;
+import views.html.add;
 
 /**
  * The main {@link Controller} for the TextEx application.
@@ -50,7 +52,15 @@ public class Application extends Controller {
   }
   
   public static Result register() {
-    return ok(views.html.register.render(null, new DynamicForm(), false, new Form<models.Student>(models.Student.class), false, false));
+    return ok(register.render(null, new DynamicForm(), false, new Form<models.Student>(models.Student.class), false, false));
+  }
+  
+  public static Result search() {
+      return ok(search.render(null, new DynamicForm(), false, new DynamicForm(), null));
+  }
+  
+  public static Result addBook() {
+      return ok(add.render(null, new DynamicForm(), false, new Form<models.Book>(models.Book.class), false, false));
   }
 
 }

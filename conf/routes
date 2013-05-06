@@ -6,10 +6,14 @@
 GET     /                           controllers.Application.index()
 POST    /                           controllers.Application.login()
 
-GET     /books                      controllers.Book.index()
+GET     /books                      controllers.Application.search()
+POST    /books                      controllers.Book.search()
 GET     /books/:isbn                controllers.Book.details(isbn: String)
-POST    /books                      controllers.Book.newBook()
+POST    /books/add                  controllers.Book.newBook()
 DELETE  /books/:isbn                controllers.Book.delete(isbn: String)
+GET     /books/dummy                controllers.Book.index()
+
+GET     /addbook                    controllers.Application.addBook()
 
 GET     /students                   controllers.Student.index()
 GET     /students/:studentId        controllers.Student.details(studentId: String)
@@ -35,5 +39,5 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
 
 # Map Bootstrap images
-#GET     /assets/img/glyphicons-halflings.png            controllers.Assets.at(path="/public", file="/images/glyphicons-halflings.png")
-#GET     /assets/img/glyphicons-halflings-white.png      controllers.Assets.at(path="/public", file="/images/glyphicons-halflings-white.png")
+GET     /assets/img/glyphicons-halflings.png            controllers.Assets.at(path="/public", file="/images/glyphicons-halflings.png")
+GET     /assets/img/glyphicons-halflings-white.png      controllers.Assets.at(path="/public", file="/images/glyphicons-halflings-white.png")

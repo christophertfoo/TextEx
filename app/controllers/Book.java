@@ -17,7 +17,10 @@
 
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -50,6 +53,13 @@ public class Book extends Controller {
   public static Result details(String isbn) {
     models.Book book = models.Book.find().where().eq("isbn", isbn).findUnique();
     return (book == null) ? notFound("No book found") : ok(book.toString());
+  }
+  
+  public static Result search() {
+      DynamicForm bookForm = Form.form().bindFromRequest();
+      List<models.Book> bookList = new ArrayList<>();
+      bookList.add(new models.Book("111-111-1111", "Test Book", "Some one", "Some publisher", 12.99));
+      return ok(views.html.search.render(null, new DynamicForm(), false, bookForm, bookList));
   }
 
   /**

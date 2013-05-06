@@ -77,6 +77,12 @@ public class Book extends Model {
   @Required
   @Min(0)
   private double price;
+  
+  @Required
+  private String authors;
+  
+  @Required
+  private String publisher;
 
   /**
    * The {@link Request}s to buy this {@link Book}.
@@ -98,11 +104,13 @@ public class Book extends Model {
    * @param price The price of the Book.
    * @param edition The edition of the Book.
    */
-  public Book(String isbn, String name, double price, int edition) {
+  public Book(String isbn, String name, String authors, String publisher, double price, int edition) {
     this.isbn = isbn;
     this.name = name;
     this.price = price;
     this.edition = edition;
+    this.authors = authors;
+    this.publisher = publisher;
   }
 
   /**
@@ -112,8 +120,8 @@ public class Book extends Model {
    * @param name The name of the Book.
    * @param price The price of the Book.
    */
-  public Book(String isbn, String name, double price) {
-    this(isbn, name, price, 1);
+  public Book(String isbn, String name, String authors, String publisher, double price) {
+    this(isbn, name, authors, publisher, price, 1);
   }
 
   /**
@@ -263,5 +271,33 @@ public class Book extends Model {
    */
   public void setOffers(List<Offer> offers) {
     this.offers = offers;
+  }
+
+  /**
+   * @return the authors
+   */
+  public String getAuthors() {
+    return this.authors;
+  }
+  
+  /**
+   * @param authors the authors to set
+   */
+  public void setAuthors(String authors) {
+    this.authors = authors;
+  }
+  
+  /**
+   * @return the publisher
+   */
+  public String getPublisher() {
+    return this.publisher;
+  }
+  
+  /**
+   * @param publisher the publisher to set
+   */
+  public void setPublisher(String publisher) {
+    this.publisher = publisher;
   }
 }
