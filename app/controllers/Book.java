@@ -17,13 +17,15 @@
 
 package controllers;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.avaje.ebean.ExpressionList;
 
 /**
  * The {@link Controller} for the {@link models.Book} type.
@@ -57,8 +59,47 @@ public class Book extends Controller {
   
   public static Result search() {
       DynamicForm bookForm = Form.form().bindFromRequest();
-      List<models.Book> bookList = new ArrayList<>();
-      bookList.add(new models.Book("111-111-1111", "Test Book", "Some one", "Some publisher", 12.99));
+      ExpressionList<models.Book> query = models.Book.find().where();
+      
+      if(bookForm.get("isbn").length() > 0) {
+          query = query.icontains("isbn", bookForm.get("isbn"));
+      }
+      
+      if(bookForm.get("name").length() > 0) {
+          query = query.icontains("name", bookForm.get("name"));
+      }
+      
+      if(bookForm.get("authors").length() > 0) {
+          query = query.icontains("authors", bookForm.get("authors"));
+      }
+      
+      if(bookForm.get("publisher").length() > 0) {
+          query = query.icontains("publisher", bookForm.get("publisher"));
+      }
+      
+      if(bookForm.get("authors").length() > 0) {
+          query = query.icontains("authors", bookForm.get("authors"));
+      }
+      
+      if(bookForm.get("edition").length() > 0) {
+          try {
+              query = query.ge("edition", Integer.parseInt(bookForm.get("edition")));
+          }
+          catch(NumberFormatException e) {
+              // Do nothing.
+          }
+      }
+      
+      if(bookForm.get("price").length() > 0) {
+          try {
+              query = query.le("price", Double.parseDouble(bookForm.get("price")));
+          }
+          catch (NumberFormatException e) {
+              // Do nothing.
+          }
+      }
+      
+      List<models.Book> bookList = query.orderBy("isbn").findList();
       return ok(views.html.search.render(null, new DynamicForm(), false, bookForm, bookList));
   }
 
@@ -71,13 +112,17 @@ public class Book extends Controller {
    */
   public static Result newBook() {
     Form<models.Book> bookForm = Form.form(models.Book.class).bindFromRequest();
-    if (bookForm.hasErrors()) {
-      return badRequest(Helpers.generateErrorString(bookForm));
+    if(bookForm.field("edition").value().length() == 0) {
+        Map<String, String> data = bookForm.data();
+        data.put("edition", "1");
+        bookForm = Form.form(models.Book.class).bind(data);
     }
-
+    if (bookForm.hasErrors()) {
+      return badRequest(views.html.add.render(null, new DynamicForm(), false, bookForm, true, false));
+    }
     models.Book book = bookForm.get();
     book.save();
-    return ok(book.toString());
+    return ok(views.html.add.render(null, new DynamicForm(), false, bookForm, false, true));
   }
 
   /**

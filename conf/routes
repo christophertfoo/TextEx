@@ -9,11 +9,11 @@ POST    /                           controllers.Application.login()
 GET     /books                      controllers.Application.search()
 POST    /books                      controllers.Book.search()
 GET     /books/:isbn                controllers.Book.details(isbn: String)
-POST    /books/add                  controllers.Book.newBook()
 DELETE  /books/:isbn                controllers.Book.delete(isbn: String)
 GET     /books/dummy                controllers.Book.index()
 
 GET     /addbook                    controllers.Application.addBook()
+POST    /addbook                    controllers.Book.newBook()
 
 GET     /students                   controllers.Student.index()
 GET     /students/:studentId        controllers.Student.details(studentId: String)

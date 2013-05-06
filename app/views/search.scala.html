@@ -70,9 +70,9 @@ DynamicForm, books: List[models.Book])
 	          <td>@book.getIsbn()</td>
 	          <td><a href="@routes.Book.details(book.getIsbn)">@book.getName()</a></td>
 	          <td>@book.getAuthors()</td>
-	          <td>@book.getPublisher()</td>
 	          <td>@book.getEdition()</td>
-	          <td>@book.getPrice()</td>
+              <td>$@String.format("%.2f", Double.valueOf(book.getPrice()))</td>
+              <td>@book.getPublisher()</td>
 	        </tr>
 	        }
         }
