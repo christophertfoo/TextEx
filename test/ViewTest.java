@@ -1,3 +1,21 @@
+/*
+ *   Copyright (C) 2013  Christopher Foo
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 import static play.test.Helpers.HTMLUNIT;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
@@ -45,14 +63,24 @@ public class ViewTest {
   public void testAddSearchPage() {
     running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
       public void invoke(TestBrowser browser) {
-        AddPage addpage = new AddPage(browser.getDriver(), 3333);
-        browser.goTo(addpage);
-        addpage.isAt();
-        addpage.validAdd();
-        addpage.invalidAdd();
-        SearchPage searchpage = new SearchPage(browser.getDriver(), 3333);
-        browser.goTo(searchpage);
-        searchpage.testSearch();
+        // Need to login to access the page
+        RegisterPage registerPage = new RegisterPage(browser.getDriver(), 3333);
+        browser.goTo(registerPage);
+        registerPage.addTestStudent();
+        registerPage.loginAsTest();
+        
+        // Try adding some valid and invalid books
+        AddPage addPage = new AddPage(browser.getDriver(), 3333);
+        browser.goTo(addPage);
+        addPage.isAt();
+        addPage.validAdd();
+        addPage.invalidAdd();
+        addPage.gotoSearch();
+        
+        // Make sure the books show up in the search
+        SearchPage searchPage = new SearchPage(browser.getDriver(), 3333);
+        browser.goTo(searchPage);
+        searchPage.testSearch();
       }
     });
   }

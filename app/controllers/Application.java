@@ -26,6 +26,7 @@ import views.html.index;
 import views.html.register;
 import views.html.search;
 import views.html.add;
+import views.html.myoffers;
 
 /**
  * The main {@link Controller} for the TextEx application.
@@ -93,5 +94,9 @@ public class Application extends Controller {
    */
   public static Result addBook() {
       return ok(add.render(new DynamicForm(), new Form<models.Book>(models.Book.class), false, false));
+  }
+  
+  public static Result myOffers() {
+      return ok(myoffers.render(new DynamicForm(), null, null));
   }
 }

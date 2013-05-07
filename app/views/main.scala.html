@@ -1,4 +1,4 @@
-@(title: String, bodyHeader: String, loginForm: DynamicForm)(content: Html)
+@(title: String, bodyHeader: String, loginForm: DynamicForm, selected: String)(content: Html)
 @import helper._
 @implicitFieldConstructor = @{FieldConstructor(twitterBootstrapInput.f)}
 
@@ -36,8 +36,8 @@
       </div>
       @helper.form(action = routes.Application.login(), 'id -> "loginForm") {
       <div class="modal-body">
-        @helper.inputText(loginForm("email"), '_label -> "E-Mail / User Name") 
-        @helper.inputPassword(loginForm("password"), '_label -> "Password")
+        @helper.inputText(loginForm("email"), '_label -> "E-Mail / User Name", 'id -> "loginEmail") 
+        @helper.inputPassword(loginForm("password"), '_label -> "Password", 'id->"loginPassword")
         <!--         <div class="controls control-group" id="signinEmailGroup"> -->
         <!--           <label>E-Mail</label> -->
         <!--           <input name="email" id="email" type="email" style="" class="input-block-level">  -->
@@ -53,8 +53,8 @@
         }
       </div>
       <div class="modal-footer" style="">
-        <a class="pull-left" href="@routes.Application.register()" id="registerLink">Register Now! It's free!</a> <input class="btn btn-primary" type="submit"> <a class="btn"
-          data-dismiss="modal" aria-hidden="true" style="">Close</a>
+        <a class="pull-left" href="@routes.Application.register()" id="registerLink">Register Now! It's free!</a> <input class="btn btn-primary" type="submit" id="loginSubmit">
+        <a class="btn" data-dismiss="modal" aria-hidden="true" style="">Close</a>
       </div>
       }
     </div>
@@ -67,16 +67,16 @@
           </a> <a class="brand">TextEx</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="@routes.Application.index()" class="active" id="homeNav">Home</a></li>
-              <li><a href="@routes.Application.search()" id="searchNav">Browse Books</a></li>
+              <li @if("home".equals(selected)){class="active"}><a href="@routes.Application.index()" id="homeNav">Home</a></li>
+              <li @if("search".equals(selected)){class="active"}><a href="@routes.Application.search()" id="searchNav">Browse Books</a></li>
               @if(session.get("username") != null) {
               <!-- Will be shown when logged in -->
-              <li><a href="@routes.Application.addBook()" id="addNav">Add Book</a></li>
-              <li><a href="#" id="myNav">My Offers / Requests</a></li>
+              <li @if("add".equals(selected)){class="active"}><a href="@routes.Application.addBook()" id="addNav">Add Book</a></li>
+              <li @if("myoffers".equals(selected)){class="active"}><a href="@routes.Application.myOffers" id="myNav">My Offers / Requests</a></li>
               }
             </ul>
-            @if(session.get("username") == null) { <a id="signinButton" class="btn btn-primary pull-right" role="button" data-toggle="modal" href="#signin">Sign In</a> } else {
-            <p class="logged-in-message pull-right">@("Logged in as: " + session.get("username")) &nbsp; &nbsp; <a id="logoutButton" class="btn btn-primary" href="@routes.Application.logout()">Log Out</a></p>
+            @if(session.get("username") == null) { <a id="signinButton" class="btn btn-primary pull-right btn-small" role="button" data-toggle="modal" href="#signin">Sign In</a> } else {
+            <p class="logged-in-message pull-right">@("Logged in as: " + session.get("username")) &nbsp; &nbsp; <a id="logoutButton" class="btn btn-primary btn-small" href="@routes.Application.logout()">Log Out</a></p>
             }
           </div>
         </div>

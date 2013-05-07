@@ -29,7 +29,7 @@ BrowseBooks = function() {
   }
 
   function sortIconClicked(event) {
-    $("#" + event.target.id).parent().click()
+    $(event.target).parent().click();
     event.stopPropagation();
   }
 

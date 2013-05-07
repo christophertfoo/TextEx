@@ -54,7 +54,7 @@ public class Book extends Controller {
    */
   public static Result details(String isbn) {
     models.Book book = models.Book.find().where().eq("isbn", isbn).findUnique();
-    return (book == null) ? notFound("No book found") : ok(book.toString());
+    return (book == null) ? notFound("No book found") : ok(views.html.bookinfo.render(new DynamicForm(), book));
   }
   
   /**
