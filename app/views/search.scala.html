@@ -1,11 +1,9 @@
-@(student: models.Student, loginForm: DynamicForm, loginFail: Boolean, searchForm:
-DynamicForm, books: List[models.Book])
+@(loginForm: DynamicForm, searchForm: DynamicForm, books: List[models.Book])
 
 @import helper._
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
-@main("Browse Books",
-"Browse Books", student, loginForm, loginFail) {
+@main("Browse Books", "Browse Books", loginForm) {
  <script src="@routes.Assets.at("javascripts/browsebooks.js")" type="text/javascript"></script>
  <div class="row-fluid">
     <div class="span3 well">

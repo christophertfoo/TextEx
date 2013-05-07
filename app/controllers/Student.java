@@ -58,19 +58,19 @@ public class Student extends Controller {
   /**
    * Creates a new {@link models.Student} from the POST request's data and adds it to the database.
    * 
-   * @return A 200 {@link Status} containing the created Student's information or a 400 Status if
+   * @return A 200 {@link Status} to the register page with a success message or a 400 Status to the register page with an error message if
    * the data in the request is incorrect.
    */
   public static Result newStudent() {
     Form<models.Student> studentForm = Form.form(models.Student.class).bindFromRequest();
     if (studentForm.hasErrors()) {
-      return badRequest(register.render(null, new DynamicForm(), false, studentForm, true, false));
+      return badRequest(register.render(new DynamicForm(), studentForm, true, false));
     }
 
     models.Student student = studentForm.get();
     student.setPassword(Crypto.encryptAES(student.getPassword()));
     student.save();
-    return ok(register.render(null, new DynamicForm(), false, studentForm, false, true));
+    return ok(register.render(new DynamicForm(), studentForm, false, true));
   }
 
   /**

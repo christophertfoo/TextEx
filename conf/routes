@@ -5,6 +5,7 @@
 # Home page
 GET     /                           controllers.Application.index()
 POST    /                           controllers.Application.login()
+GET    /logout                     controllers.Application.logout()
 
 GET     /books                      controllers.Application.search()
 POST    /books                      controllers.Book.search()

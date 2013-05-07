@@ -83,8 +83,9 @@ public class ControllerTest {
     Map<String, String> bookData = new HashMap<>();
     bookData.put("isbn", "22222-22-222");
     bookData.put("name", "Test Book 2");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "19.99");
-    bookData.put("edition", "4");
     FakeRequest request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
     result = callAction(controllers.routes.ref.Book.newBook(), request);
@@ -94,6 +95,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "-1");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -104,6 +107,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
     result = callAction(controllers.routes.ref.Book.newBook(), request);
@@ -113,6 +118,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "9.99");
     bookData.put("edition", "0");
     request = fakeRequest();
@@ -124,6 +131,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "22222-22-222");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -134,6 +143,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -143,6 +154,8 @@ public class ControllerTest {
     // Test POST /books (missing ISBN)
     bookData.clear();
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -153,6 +166,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -162,11 +177,63 @@ public class ControllerTest {
     // Test POST /books (missing name)
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
     result = callAction(controllers.routes.ref.Book.newBook(), request);
     assertEquals("Create book with missing name fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (empty authors)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("authors", "");
+    bookData.put("publisher", "UHM");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with empty authors fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (missing authors)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("publisher", "UHM");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with missing authors fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (empty publisher)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with empty publisher fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (missing publisher)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with missing publisher fails", BAD_REQUEST, status(result));
 
     // Test DELETE /books/11111-11-111 (a valid isbn)
     result = callAction(controllers.routes.ref.Book.delete(isbn));

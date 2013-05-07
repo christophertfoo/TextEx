@@ -3,6 +3,8 @@ package pages;
 import org.fluentlenium.core.FluentPage;
 import org.openqa.selenium.WebDriver;
 
+import static org.junit.Assert.assertTrue;
+
 public class RegisterPage extends FluentPage {
   private String url;  
   
@@ -29,7 +31,7 @@ public class RegisterPage extends FluentPage {
       fill("#password").with("passwordlong");
       fill("#confirmPassword").with("passwordlong");
       click("#registerSubmit");
-      assert(text("#messageAlert").get(0).contains("Successfully registered!"));
+      assertTrue(this.pageSource().contains("Successfully registered!"));
   }
   
   public void invalidInfo() {
@@ -117,12 +119,12 @@ public class RegisterPage extends FluentPage {
   
   public void gotoHome() {
       click("#homeNav");
-      assert(this.title().equals("Welcome to TextEx"));
+      assertTrue(this.title().equals("Welcome to TextEx"));
   }
   
   private void checkError() {
       click("#registerSubmit");
-      assert(text("#messageAlert").get(0).contains("There are errors in the form."));
+      assertTrue(this.pageSource().contains("There are errors in the form."));
   }
   
   private void clearForm() {

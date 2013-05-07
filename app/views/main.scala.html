@@ -1,4 +1,4 @@
-@(title: String, bodyHeader: String, student: models.Student, loginForm: DynamicForm, loginFail: Boolean)(content: Html)
+@(title: String, bodyHeader: String, loginForm: DynamicForm)(content: Html)
 @import helper._
 @implicitFieldConstructor = @{FieldConstructor(twitterBootstrapInput.f)}
 
@@ -15,7 +15,7 @@
 <script type="text/javascript">
         $(document).ready(
             function() {
-              @if(loginFail) {
+              @if("t".equals(flash.get("loginFail"))) {
                 $("#signin").toggleClass("fade");
                 $("#signinButton").click();
                 $("#signin").toggleClass("fade");
@@ -27,7 +27,7 @@
 </head>
 <body>
   <div class="container-fluid">
-    @if(student == null) {
+    @if(session.get("username") == null) {
     <!-- Modal Pop Up Window -->
     <div id="signin" class="modal fade hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">
@@ -36,7 +36,8 @@
       </div>
       @helper.form(action = routes.Application.login(), 'id -> "loginForm") {
       <div class="modal-body">
-        @helper.inputText(loginForm("email"), '_label -> "E-Mail") @helper.inputPassword(loginForm("password"), '_label -> "Password")
+        @helper.inputText(loginForm("email"), '_label -> "E-Mail / User Name") 
+        @helper.inputPassword(loginForm("password"), '_label -> "Password")
         <!--         <div class="controls control-group" id="signinEmailGroup"> -->
         <!--           <label>E-Mail</label> -->
         <!--           <input name="email" id="email" type="email" style="" class="input-block-level">  -->
@@ -47,8 +48,8 @@
         <!--           <input name="password" id="password" type="password" class="input-block-level" style="">  -->
         <!--         </div> -->
 
-        @if(loginFail) {
-        <div class="alert alert-error" id="signinAlert">Could not find e-mail address / password pair.</div>
+        @if("t".equals(flash.get("loginFail"))) {
+        <div class="alert alert-error" id="signinAlert">Could not find e-mail address / user name & password pair.</div>
         }
       </div>
       <div class="modal-footer" style="">
@@ -67,15 +68,15 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="@routes.Application.index()" class="active" id="homeNav">Home</a></li>
-              <li><a href="@routes.Application.search()">Browse Books</a></li>
-              @if(student != null) {
+              <li><a href="@routes.Application.search()" id="searchNav">Browse Books</a></li>
+              @if(session.get("username") != null) {
               <!-- Will be shown when logged in -->
-              <li><a href="#">Add Book</a></li>
-              <li><a href="#">My Offers / Requests</a></li>
+              <li><a href="@routes.Application.addBook()" id="addNav">Add Book</a></li>
+              <li><a href="#" id="myNav">My Offers / Requests</a></li>
               }
             </ul>
-            @if(student == null) { <a id="signinButton" class="btn btn-primary pull-right" role="button" data-toggle="modal" href="#signin">Sign In</a> } else {
-            <p class="logged-in-message pull-right">@("Logged in as: " + student.getFirstName() + " " + student.getLastName()) &nbsp; &nbsp; <a id="logoutButton" class="btn btn-primary" href="#">Log Out</a></p>
+            @if(session.get("username") == null) { <a id="signinButton" class="btn btn-primary pull-right" role="button" data-toggle="modal" href="#signin">Sign In</a> } else {
+            <p class="logged-in-message pull-right">@("Logged in as: " + session.get("username")) &nbsp; &nbsp; <a id="logoutButton" class="btn btn-primary" href="@routes.Application.logout()">Log Out</a></p>
             }
           </div>
         </div>

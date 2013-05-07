@@ -1,20 +1,20 @@
-@(student: models.Student, loginForm: DynamicForm, loginFail: Boolean, bookForm: Form[models.Book], addFail: Boolean, addSucceed: Boolean)
+@(loginForm: DynamicForm, bookForm: Form[models.Book], addFail: Boolean, addSucceed: Boolean)
 
 @import helper._
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
-@main("Add Book",
-"Add a Book", student, loginForm, loginFail) {
+@main("Add Book", "Add a Book", loginForm) {
   <script src="@routes.Assets.at("javascripts/addbook.js")" type="text/javascript"></script>
   <!-- Add Form -->
   <div class="row-fluid">
     <h2>Add a Book</h2>
+    @if(session.get("username") != null) {
     <form action="@routes.Book.newBook()" method="post">
       <fieldset>
         <div class="controls controls-row">
           <div class="span4 control-group" id="isbnGroup">
             <label>ISBN</label>
-            <input type="text" class="input-block-level", name="isbn" id="isbnInput" value="@bookForm.field("isbn").value()">
+            <input type="text" class="input-block-level" name="isbn" id="isbnInput" value="@bookForm.field("isbn").value()">
             <span class="help-block" id="isbnHelp"></span> 
           </div>
           <div class="span4 control-group" id="titleGroup">
@@ -55,5 +55,9 @@
         </div>
       </fieldset>
     </form>
+    } else {
+        <script type="text/javascript">$("#signinButton").click()</script>
+        <h3>Please Log In!</h3>
+    }
   </div>
 }

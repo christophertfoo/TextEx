@@ -57,10 +57,16 @@ public class Book extends Controller {
     return (book == null) ? notFound("No book found") : ok(book.toString());
   }
   
+  /**
+   * Searches the database for {@link models.Book}s that match the criteria provided by the request.
+   * 
+   * @return A 200 {@link Status} with the search page containing the matching Books.
+   */
   public static Result search() {
       DynamicForm bookForm = Form.form().bindFromRequest();
       ExpressionList<models.Book> query = models.Book.find().where();
       
+      // Add constraints to the query.
       if(bookForm.get("isbn").length() > 0) {
           query = query.icontains("isbn", bookForm.get("isbn"));
       }
@@ -86,7 +92,7 @@ public class Book extends Controller {
               query = query.ge("edition", Integer.parseInt(bookForm.get("edition")));
           }
           catch(NumberFormatException e) {
-              // Do nothing.
+              // Do nothing.  Just ignore it for now.
           }
       }
       
@@ -95,12 +101,13 @@ public class Book extends Controller {
               query = query.le("price", Double.parseDouble(bookForm.get("price")));
           }
           catch (NumberFormatException e) {
-              // Do nothing.
+              // Do nothing.  Just ignore it for now.
           }
       }
       
+      // Run query.
       List<models.Book> bookList = query.orderBy("isbn").findList();
-      return ok(views.html.search.render(null, new DynamicForm(), false, bookForm, bookList));
+      return ok(views.html.search.render(new DynamicForm(), bookForm, bookList));
   }
 
   /**
@@ -112,17 +119,20 @@ public class Book extends Controller {
    */
   public static Result newBook() {
     Form<models.Book> bookForm = Form.form(models.Book.class).bindFromRequest();
-    if(bookForm.field("edition").value().length() == 0) {
+    
+    // Default edition to 1 if it is not provided.
+    if(bookForm.field("edition").value() == null || bookForm.field("edition").value().length() == 0) {
         Map<String, String> data = bookForm.data();
         data.put("edition", "1");
         bookForm = Form.form(models.Book.class).bind(data);
     }
+    
     if (bookForm.hasErrors()) {
-      return badRequest(views.html.add.render(null, new DynamicForm(), false, bookForm, true, false));
+      return badRequest(views.html.add.render(new DynamicForm(), bookForm, true, false));
     }
     models.Book book = bookForm.get();
     book.save();
-    return ok(views.html.add.render(null, new DynamicForm(), false, bookForm, false, true));
+    return ok(views.html.add.render(new DynamicForm(), bookForm, false, true));
   }
 
   /**

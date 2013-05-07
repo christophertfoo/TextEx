@@ -1,18 +1,16 @@
-@(student: models.Student, loginForm: DynamicForm, loginFail: Boolean, registerForm:
-Form[models.Student], registerFail: Boolean, registerSucceed: Boolean)
+@(loginForm: DynamicForm, registerForm: Form[models.Student], registerFail: Boolean, registerSucceed: Boolean)
 
 @import helper._
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
 @main("Register for TextEx",
-"Register for Free!", student, loginForm, loginFail) {
+"Register for Free!", loginForm) {
 <!-- Body Content -->
 <div class="row-fluid landing-top-row">
   <div class="controls control-group">
     <div
       class="alert @if(!registerFail && !registerSucceed) {hide} @if(registerFail) {alert-error} @if(registerSucceed){alert-success}" id="messageAlert">
-      @if(registerFail){There are errors in the form.} @if(registerSucceed){Successfully
-      registered!}
+      @if(registerFail){There are errors in the form.} @if(registerSucceed){Successfully registered!}
       <button type="button" class="close" data-dismiss="alert">x</button>
     </div>
   </div>
