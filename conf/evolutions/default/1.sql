@@ -9,6 +9,8 @@ create table book (
   name                      varchar(255),
   edition                   integer,
   price                     double,
+  authors                   varchar(255),
+  publisher                 varchar(255),
   constraint uq_book_isbn unique (isbn),
   constraint pk_book primary key (primary_key))
 ;
@@ -45,6 +47,7 @@ create table student (
   first_name                varchar(255),
   last_name                 varchar(255),
   email                     varchar(255),
+  password                  varchar(255),
   constraint uq_student_student_id unique (student_id),
   constraint pk_student primary key (primary_key))
 ;

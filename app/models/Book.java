@@ -76,7 +76,21 @@ public class Book extends Model {
    */
   @Required
   @Min(0)
-  private double price;
+  private Double price;
+  
+  /**
+   * The names of the authors of this {@link Book}.
+   */
+  @Required
+  @MinLength(1)
+  private String authors;
+  
+  /**
+   * The name of the publisher of this {@link Book}.
+   */
+  @Required
+  @MinLength(1)
+  private String publisher;
 
   /**
    * The {@link Request}s to buy this {@link Book}.
@@ -95,14 +109,18 @@ public class Book extends Model {
    * 
    * @param isbn The ISBN of the Book.
    * @param name The name of the Book.
+   * @param authors The names of the authors of the Book.
+   * @param publisher The name of the publisher of the Book.
    * @param price The price of the Book.
    * @param edition The edition of the Book.
    */
-  public Book(String isbn, String name, double price, int edition) {
+  public Book(String isbn, String name, String authors, String publisher, Double price, int edition) {
     this.isbn = isbn;
     this.name = name;
     this.price = price;
     this.edition = edition;
+    this.authors = authors;
+    this.publisher = publisher;
   }
 
   /**
@@ -110,10 +128,12 @@ public class Book extends Model {
    * 
    * @param isbn The ISBN of the Book.
    * @param name The name of the Book.
+   * @param authors The names of the authors of the Book.
+   * @param publisher The name of the publisher of the Book.
    * @param price The price of the Book.
    */
-  public Book(String isbn, String name, double price) {
-    this(isbn, name, price, 1);
+  public Book(String isbn, String name, String authors, String publisher, Double price) {
+    this(isbn, name, authors, publisher, price, 1);
   }
 
   /**
@@ -145,7 +165,7 @@ public class Book extends Model {
    */
   @Override
   public String toString() {
-    return String.format("[Book %s %s %f %d]", this.isbn, this.name, this.price, this.edition);
+    return String.format("[Book %s %s %s %s %f %d]", this.isbn, this.name, this.authors, this.publisher, this.price, this.edition);
   }
 
   /**
@@ -216,7 +236,7 @@ public class Book extends Model {
    * 
    * @return The current price of this Book.
    */
-  public double getPrice() {
+  public Double getPrice() {
     return this.price;
   }
 
@@ -225,7 +245,7 @@ public class Book extends Model {
    * 
    * @param price The new price of this Book.
    */
-  public void setPrice(double price) {
+  public void setPrice(Double price) {
     this.price = price;
   }
 
@@ -263,5 +283,41 @@ public class Book extends Model {
    */
   public void setOffers(List<Offer> offers) {
     this.offers = offers;
+  }
+
+  /**
+   * Gets the names of the {@link #authors} of this {@link Book}.
+   * 
+   * @return The names of the authors of this Book.
+   */
+  public String getAuthors() {
+    return this.authors;
+  }
+  
+  /**
+   * Sets the names of the {@link #authors} of this {@link Book}.
+   * 
+   * @param authors The names of the new authors.
+   */
+  public void setAuthors(String authors) {
+    this.authors = authors;
+  }
+  
+  /**
+   * Gets the name of the {@link #publisher} of this {@link Book}.
+   * 
+   * @return The name of the publisher of this book.
+   */
+  public String getPublisher() {
+    return this.publisher;
+  }
+  
+  /**
+   * Sets the name of the {@link #publisher} of this {@link Book}.
+   * 
+   * @param publisher The new publisher.
+   */
+  public void setPublisher(String publisher) {
+    this.publisher = publisher;
   }
 }

@@ -1,0 +1,31 @@
+.landing-header {
+  background-color: green;
+  color: white;
+  text-align: center;
+}
+
+
+.landing-footer {
+  background-color: green;
+  color: white;
+  text-align: center;
+  font-size: 8;
+}
+
+.landing-content-left {
+  border-right: 5px green solid;
+}
+
+.paragraph-margin {
+  margin: 5px;
+}
+
+
+.logged-in-message {
+ vertical-align: bottom;
+ font-weight: bold;
+}
+
+label {
+	font-weight: bold;
+}

@@ -19,11 +19,13 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
@@ -81,6 +83,13 @@ public class Student extends Model {
   private String email;
 
   /**
+   * This {@link Student}'s password.
+   */
+  @Required
+  @MinLength(value = 10)
+  private String password;
+
+  /**
    * The {@link Request}s submitted by this {@link Student}.
    */
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
@@ -99,12 +108,14 @@ public class Student extends Model {
    * @param firstName The first name of the Student.
    * @param lastName The last name of the Student.
    * @param email The email address of the Student.
+   * @param password The password of the Student.
    */
-  public Student(String studentId, String firstName, String lastName, String email) {
+  public Student(String studentId, String firstName, String lastName, String email, String password) {
     this.studentId = studentId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
+    this.password = password;
   }
 
   /**
@@ -255,5 +266,23 @@ public class Student extends Model {
    */
   public void setStudentId(String studentId) {
     this.studentId = studentId;
+  }
+
+  /**
+   * Gets the {@link #password} of this {@link Student}.
+   * 
+   * @return The password of this Student.
+   */
+  public String getPassword() {
+    return this.password;
+  }
+
+  /**
+   * Sets the {@link #password} of this {@link Student}.
+   * 
+   * @param password The Student's new password.
+   */
+  public void setPassword(String password) {
+    this.password = password;
   }
 }

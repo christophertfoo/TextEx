@@ -1,3 +1,21 @@
+/*
+ *   Copyright (C) 2013  Christopher Foo
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 import java.util.HashMap;
 import java.util.Map;
 import models.Book;
@@ -66,7 +84,7 @@ public class ControllerTest {
 
     // Test GET /books on a database containing a single book.
     String isbn = "11111-11-111";
-    Book book = new Book(isbn, "Test Book", 20.99);
+    Book book = new Book(isbn, "Test Book", "Dude", "Awesome Publishing", 20.99);
     book.save();
     result = callAction(controllers.routes.ref.Book.index());
     assertTrue("One book", contentAsString(result).contains(isbn));
@@ -83,8 +101,9 @@ public class ControllerTest {
     Map<String, String> bookData = new HashMap<>();
     bookData.put("isbn", "22222-22-222");
     bookData.put("name", "Test Book 2");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "19.99");
-    bookData.put("edition", "4");
     FakeRequest request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
     result = callAction(controllers.routes.ref.Book.newBook(), request);
@@ -94,6 +113,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "-1");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -104,6 +125,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
     result = callAction(controllers.routes.ref.Book.newBook(), request);
@@ -113,6 +136,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "9.99");
     bookData.put("edition", "0");
     request = fakeRequest();
@@ -124,6 +149,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "22222-22-222");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -134,6 +161,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "");
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -143,6 +172,8 @@ public class ControllerTest {
     // Test POST /books (missing ISBN)
     bookData.clear();
     bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -153,6 +184,8 @@ public class ControllerTest {
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
     bookData.put("name", "");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
@@ -162,11 +195,63 @@ public class ControllerTest {
     // Test POST /books (missing name)
     bookData.clear();
     bookData.put("isbn", "33333-33-333");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "UHM");
     bookData.put("price", "50.99");
     request = fakeRequest();
     request.withFormUrlEncodedBody(bookData);
     result = callAction(controllers.routes.ref.Book.newBook(), request);
     assertEquals("Create book with missing name fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (empty authors)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("authors", "");
+    bookData.put("publisher", "UHM");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with empty authors fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (missing authors)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("publisher", "UHM");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with missing authors fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (empty publisher)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("publisher", "");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with empty publisher fails", BAD_REQUEST, status(result));
+    
+    // Test POST /books (missing publisher)
+    bookData.clear();
+    bookData.put("isbn", "33333-33-333");
+    bookData.put("name", "Bad Book");
+    bookData.put("authors", "Some one, dude, & you");
+    bookData.put("price", "9.99");
+    bookData.put("edition", "1");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(bookData);
+    result = callAction(controllers.routes.ref.Book.newBook(), request);
+    assertEquals("Create book with missing publisher fails", BAD_REQUEST, status(result));
 
     // Test DELETE /books/11111-11-111 (a valid isbn)
     result = callAction(controllers.routes.ref.Book.delete(isbn));
@@ -188,7 +273,7 @@ public class ControllerTest {
 
     // Test GET /students on a database containing a single student.
     String studentId = "Student-01";
-    Student student = new Student(studentId, "Test", "Student", "test@hawaii.edu");
+    Student student = new Student(studentId, "Test", "Student", "test@hawaii.edu", "password");
     student.save();
     result = callAction(controllers.routes.ref.Student.index());
     assertTrue("One student", contentAsString(result).contains(studentId));
@@ -207,6 +292,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     FakeRequest request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -218,6 +304,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -228,6 +315,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -239,6 +327,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -250,6 +339,7 @@ public class ControllerTest {
     studentData.put("firstName", "");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -260,6 +350,7 @@ public class ControllerTest {
     studentData.put("studentId", "Student-03");
     studentData.put("lastName", "Body");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -271,6 +362,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "password");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -281,6 +373,7 @@ public class ControllerTest {
     studentData.put("studentId", "Student-03");
     studentData.put("firstName", "Some");
     studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -292,6 +385,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "bademail");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -303,6 +397,7 @@ public class ControllerTest {
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
     studentData.put("email", "");
+    studentData.put("password", "password");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
@@ -313,10 +408,34 @@ public class ControllerTest {
     studentData.put("studentId", "Student-03");
     studentData.put("firstName", "Some");
     studentData.put("lastName", "Body");
+    studentData.put("password", "mypassword");
     request = fakeRequest();
     request.withFormUrlEncodedBody(studentData);
     result = callAction(controllers.routes.ref.Student.newStudent(), request);
     assertEquals("Create student with missing email fails", BAD_REQUEST, status(result));
+    
+    // Test POST /students (too short password)
+    studentData.clear();
+    studentData.put("studentId", "Student-03");
+    studentData.put("firstName", "Some");
+    studentData.put("lastName", "Body");
+    studentData.put("email", "body@hawaii.edu");
+    studentData.put("password", "pass");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(studentData);
+    result = callAction(controllers.routes.ref.Student.newStudent(), request);
+    assertEquals("Create student with short password fails", BAD_REQUEST, status(result));
+    
+    // Test POST /students (missing password)
+    studentData.clear();
+    studentData.put("studentId", "Student-03");
+    studentData.put("firstName", "Some");
+    studentData.put("lastName", "Body");
+    studentData.put("email", "body@hawaii.edu");
+    request = fakeRequest();
+    request.withFormUrlEncodedBody(studentData);
+    result = callAction(controllers.routes.ref.Student.newStudent(), request);
+    assertEquals("Create student with missing password fails", BAD_REQUEST, status(result));
 
     // Test DELETE /students/Student-01 (a valid studentId)
     result = callAction(controllers.routes.ref.Student.delete(studentId));
@@ -337,8 +456,8 @@ public class ControllerTest {
     assertTrue("Empty offers", contentAsString(result).contains("No offers"));
 
     // Test GET /offers on a database containing a single offer.
-    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu");
-    Book book = new Book("11111-11-111", "Test Book", 20.99);
+    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu", "password");
+    Book book = new Book("11111-11-111", "Test Book", "Lady", "Okay Publishing", 20.99);
     student.save();
     book.save();
     
@@ -551,8 +670,8 @@ public class ControllerTest {
     assertTrue("Empty requests", contentAsString(result).contains("No requests"));
 
     // Test GET /requests on a database containing a single request.
-    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu");
-    Book book = new Book("11111-11-111", "Test Book", 20.99);
+    Student student = new Student("Student-01", "Test", "Student", "test@hawaii.edu", "password");
+    Book book = new Book("11111-11-111", "Test Book", "Dude", "Awesome Publishing", 20.99);
     student.save();
     book.save();
     
