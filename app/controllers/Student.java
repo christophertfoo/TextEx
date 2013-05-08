@@ -34,13 +34,18 @@ import views.html.register;
 public class Student extends Controller {
 
   /**
-   * Gets all {@link models.Student}s currently in the database.
+   * Deletes the given {@link models.Student} from the database. Does nothing if the Student is not
+   * in the database.
    * 
-   * @return A 200 {@link Status} containing all of the students in the database.
+   * @param studentId The ID of the target Student.
+   * @return A 200 {@link Status}.
    */
-  public static Result index() {
-    List<models.Student> students = models.Student.find().findList();
-    return ok((students.size() == 0) ? "No students" : students.toString());
+  public static Result delete(String studentId) {
+    models.Student student = models.Student.find().where().eq("studentId", studentId).findUnique();
+    if (student != null) {
+      student.delete();
+    }
+    return ok();
   }
 
   /**
@@ -56,10 +61,20 @@ public class Student extends Controller {
   }
 
   /**
+   * Gets all {@link models.Student}s currently in the database.
+   * 
+   * @return A 200 {@link Status} containing all of the students in the database.
+   */
+  public static Result index() {
+    List<models.Student> students = models.Student.find().findList();
+    return ok((students.size() == 0) ? "No students" : students.toString());
+  }
+
+  /**
    * Creates a new {@link models.Student} from the POST request's data and adds it to the database.
    * 
-   * @return A 200 {@link Status} to the register page with a success message or a 400 Status to the register page with an error message if
-   * the data in the request is incorrect.
+   * @return A 200 {@link Status} to the register page with a success message or a 400 Status to the
+   * register page with an error message if the data in the request is incorrect.
    */
   public static Result newStudent() {
     Form<models.Student> studentForm = Form.form(models.Student.class).bindFromRequest();
@@ -71,20 +86,5 @@ public class Student extends Controller {
     student.setPassword(Crypto.encryptAES(student.getPassword()));
     student.save();
     return ok(register.render(new DynamicForm(), studentForm, false, true));
-  }
-
-  /**
-   * Deletes the given {@link models.Student} from the database. Does nothing if the Student is not
-   * in the database.
-   * 
-   * @param studentId The ID of the target Student.
-   * @return A 200 {@link Status}.
-   */
-  public static Result delete(String studentId) {
-    models.Student student = models.Student.find().where().eq("studentId", studentId).findUnique();
-    if (student != null) {
-      student.delete();
-    }
-    return ok();
   }
 }

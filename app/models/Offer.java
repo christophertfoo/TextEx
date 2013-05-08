@@ -46,25 +46,13 @@ public class Offer extends Model {
   private static final long serialVersionUID = 227738921651011503L;
 
   /**
-   * The row ID number and primary key of this {@link Offer}.
+   * Creates a {@link Finder} used to query the {@link Offer} table.
+   * 
+   * @return A Finder to be used with the Offer table.
    */
-  @Id
-  private Long primaryKey;
-
-  /**
-   * The natural ID of this {@link Offer}.
-   */
-  @Required
-  @MinLength(0)
-  @Column(unique = true)
-  private String offerId;
-
-  /**
-   * The {@link Student} who submitted this {@link Offer}.
-   */
-  @Required
-  @ManyToOne(cascade = CascadeType.PERSIST)
-  private Student student;
+  public static Finder<Long, Offer> find() {
+    return new Finder<>(Long.class, Offer.class);
+  }
 
   /**
    * The {@link Book} that is for sale.
@@ -80,10 +68,24 @@ public class Offer extends Model {
   private Condition condition;
 
   /**
+   * The natural ID of this {@link Offer}.
+   */
+  @Required
+  @MinLength(0)
+  @Column(unique = true)
+  private String offerId;
+
+  /**
    * The asking price of the seller.
    */
   @Required
   private double price;
+
+  /**
+   * The row ID number and primary key of this {@link Offer}.
+   */
+  @Id
+  private Long primaryKey;
 
   /**
    * The number of {@link Book}s for sale.
@@ -91,6 +93,13 @@ public class Offer extends Model {
   @Required
   @Min(1)
   private int quantity;
+
+  /**
+   * The {@link Student} who submitted this {@link Offer}.
+   */
+  @Required
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Student student;
 
   /**
    * Creates a new {@link Offer} with the given values.
@@ -113,12 +122,129 @@ public class Offer extends Model {
   }
 
   /**
-   * Creates a {@link Finder} used to query the {@link Offer} table.
+   * Gets the {@link #book} that is for sale in this {@link Offer}.
    * 
-   * @return A Finder to be used with the Offer table.
+   * @return The book for sale.
    */
-  public static Finder<Long, Offer> find() {
-    return new Finder<>(Long.class, Offer.class);
+  public Book getBook() {
+    return this.book;
+  }
+
+  /**
+   * Gets the current {@link #condition} of the {@link Book}(s) for sale.
+   * 
+   * @return The current Condition of the Book(s).
+   */
+  public Condition getCondition() {
+    return this.condition;
+  }
+
+  /**
+   * Gets the natural ID of this {@link Offer}.
+   * 
+   * @return The natural ID of this Offer.
+   */
+  public String getOfferId() {
+    return this.offerId;
+  }
+
+  /**
+   * Gets the current asking {@link #price} for the {@link Book}(s).
+   * 
+   * @return The current asking price.
+   */
+  public double getPrice() {
+    return this.price;
+  }
+
+  /**
+   * Gets the {@link #primaryKey} number of this {@link Offer}.
+   * 
+   * @return The id number of this Offer.
+   */
+  public Long getPrimaryKey() {
+    return this.primaryKey;
+  }
+
+  /**
+   * Gets the number ({@link #quantity}) of {@link Book}s for sale.
+   * 
+   * @return The number of Books for sale.
+   */
+  public int getQuantity() {
+    return this.quantity;
+  }
+
+  /**
+   * Gets the {@link #student} who submitted this {@link Offer}.
+   * 
+   * @return The student who submitted this Offer.
+   */
+  public Student getStudent() {
+    return this.student;
+  }
+
+  /**
+   * Sets the {@link #book} that is for sale in this {@link Offer}.
+   * 
+   * @param book The new book.
+   */
+  public void setBook(Book book) {
+    this.book = book;
+  }
+
+  /**
+   * Updates the current {@link #condition} of the {@link Book}(s) for sale.
+   * 
+   * @param condition The new Condition of the Book(s).
+   */
+  public void setCondition(Condition condition) {
+    this.condition = condition;
+  }
+
+  /**
+   * Sets the natural ID of this {@link Offer}.
+   * 
+   * @param offerId The new natural ID of this Offer.
+   */
+  public void setOfferId(String offerId) {
+    this.offerId = offerId;
+  }
+
+  /**
+   * Updates the asking {@link #price} for the {@link Book}(s).
+   * 
+   * @param price The new asking price.
+   */
+  public void setPrice(double price) {
+    this.price = price;
+  }
+
+  /**
+   * Updates the number ({@link #quantity}) of {@link Book}s for sale.
+   * 
+   * @param quantity The new number of Books for sale.
+   */
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
+
+  /**
+   * Sets the {@link #student} who submitted this {@link Offer}.
+   * 
+   * @param student The new student.
+   */
+  public void setStudent(Student student) {
+    this.student = student;
+  }
+
+  /**
+   * Returns the {@link String} representation of this {@link Offer}.
+   */
+  @Override
+  public String toString() {
+    return String.format("[Offer %s %s %s %s %f %d]", this.offerId, this.student.toString(),
+        this.book.toString(), this.condition.toString(), this.price, this.quantity);
   }
 
   /**
@@ -139,131 +265,5 @@ public class Offer extends Model {
           "The price of the offer must be > than 0.  Given: %f", this.price)));
     }
     return (errors.size() == 0) ? null : errors;
-  }
-
-  /**
-   * Returns the {@link String} representation of this {@link Offer}.
-   */
-  @Override
-  public String toString() {
-    return String.format("[Offer %s %s %s %s %f %d]", this.offerId, this.student.toString(),
-        this.book.toString(), this.condition.toString(), this.price, this.quantity);
-  }
-
-  /**
-   * Gets the natural ID of this {@link Offer}.
-   * 
-   * @return The natural ID of this Offer.
-   */
-  public String getOfferId() {
-    return this.offerId;
-  }
-
-  /**
-   * Sets the natural ID of this {@link Offer}.
-   * 
-   * @param offerId The new natural ID of this Offer.
-   */
-  public void setOfferId(String offerId) {
-    this.offerId = offerId;
-  }
-
-  /**
-   * Gets the current {@link #condition} of the {@link Book}(s) for sale.
-   * 
-   * @return The current Condition of the Book(s).
-   */
-  public Condition getCondition() {
-    return this.condition;
-  }
-
-  /**
-   * Updates the current {@link #condition} of the {@link Book}(s) for sale.
-   * 
-   * @param condition The new Condition of the Book(s).
-   */
-  public void setCondition(Condition condition) {
-    this.condition = condition;
-  }
-
-  /**
-   * Gets the current asking {@link #price} for the {@link Book}(s).
-   * 
-   * @return The current asking price.
-   */
-  public double getPrice() {
-    return this.price;
-  }
-
-  /**
-   * Updates the asking {@link #price} for the {@link Book}(s).
-   * 
-   * @param price The new asking price.
-   */
-  public void setPrice(double price) {
-    this.price = price;
-  }
-
-  /**
-   * Gets the number ({@link #quantity}) of {@link Book}s for sale.
-   * 
-   * @return The number of Books for sale.
-   */
-  public int getQuantity() {
-    return this.quantity;
-  }
-
-  /**
-   * Updates the number ({@link #quantity}) of {@link Book}s for sale.
-   * 
-   * @param quantity The new number of Books for sale.
-   */
-  public void setQuantity(int quantity) {
-    this.quantity = quantity;
-  }
-
-  /**
-   * Gets the {@link #primaryKey} number of this {@link Offer}.
-   * 
-   * @return The id number of this Offer.
-   */
-  public Long getPrimaryKey() {
-    return this.primaryKey;
-  }
-
-  /**
-   * Gets the {@link #student} who submitted this {@link Offer}.
-   * 
-   * @return The student who submitted this Offer.
-   */
-  public Student getStudent() {
-    return this.student;
-  }
-
-  /**
-   * Sets the {@link #student} who submitted this {@link Offer}.
-   * 
-   * @param student The new student.
-   */
-  public void setStudent(Student student) {
-    this.student = student;
-  }
-
-  /**
-   * Gets the {@link #book} that is for sale in this {@link Offer}.
-   * 
-   * @return The book for sale.
-   */
-  public Book getBook() {
-    return this.book;
-  }
-
-  /**
-   * Sets the {@link #book} that is for sale in this {@link Offer}.
-   * 
-   * @param book The new book.
-   */
-  public void setBook(Book book) {
-    this.book = book;
   }
 }

@@ -31,13 +31,18 @@ import play.mvc.Result;
 public class Request extends Controller {
 
   /**
-   * Gets the information for all {@link models.Request} currently in the database.
+   * Deletes the given {@link models.Request} from the database. Does nothing if the Request is not
+   * in the database.
    * 
-   * @return A 200 {@link Status} containing the information for all Requests in the database.
+   * @param requestId The ID of the target Request.
+   * @return A 200 {@link Status}.
    */
-  public static Result index() {
-    List<models.Request> requests = models.Request.find().findList();
-    return ok((requests.size() == 0) ? "No requests" : requests.toString());
+  public static Result delete(String requestId) {
+    models.Request request = models.Request.find().where().eq("requestId", requestId).findUnique();
+    if (request != null) {
+      request.delete();
+    }
+    return ok();
   }
 
   /**
@@ -50,6 +55,16 @@ public class Request extends Controller {
   public static Result details(String requestId) {
     models.Request request = models.Request.find().where().eq("requestId", requestId).findUnique();
     return (request == null) ? notFound("No request found") : ok(request.toString());
+  }
+
+  /**
+   * Gets the information for all {@link models.Request} currently in the database.
+   * 
+   * @return A 200 {@link Status} containing the information for all Requests in the database.
+   */
+  public static Result index() {
+    List<models.Request> requests = models.Request.find().findList();
+    return ok((requests.size() == 0) ? "No requests" : requests.toString());
   }
 
   /**
@@ -76,20 +91,5 @@ public class Request extends Controller {
     models.Request request = requestForm.get();
     request.save();
     return ok(request.toString());
-  }
-
-  /**
-   * Deletes the given {@link models.Request} from the database. Does nothing if the Request is not
-   * in the database.
-   * 
-   * @param requestId The ID of the target Request.
-   * @return A 200 {@link Status}.
-   */
-  public static Result delete(String requestId) {
-    models.Request request = models.Request.find().where().eq("requestId", requestId).findUnique();
-    if (request != null) {
-      request.delete();
-    }
-    return ok();
   }
 }

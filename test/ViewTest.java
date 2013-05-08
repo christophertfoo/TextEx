@@ -15,14 +15,12 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import static play.test.Helpers.HTMLUNIT;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 import org.junit.Test;
-
 import pages.AddPage;
 import pages.IndexPage;
 import pages.RegisterPage;
@@ -30,59 +28,76 @@ import pages.SearchPage;
 import play.libs.F.Callback;
 import play.test.TestBrowser;
 
-
+/**
+ * Tests the views of the TextEx application.
+ * 
+ * @author Christopher Foo
+ * 
+ */
 public class ViewTest {
 
-  @Test
-  public void testIndexPage() {
-    running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
-      public void invoke(TestBrowser browser) {
-        IndexPage homePage = new IndexPage(browser.getDriver(), 3333);
-        browser.goTo(homePage);
-        homePage.isAt();
-        homePage.gotoRegister();
-      }
-    });
-  }
-  
-  @Test
-  public void testRegisterPage() {
-    running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
-      public void invoke(TestBrowser browser) {
-        RegisterPage register = new RegisterPage(browser.getDriver(), 3333);
-        browser.goTo(register);
-        register.isAt();
-        register.validInfo();
-        register.invalidInfo();
-        register.gotoHome();
-      }
-    });
-  }
-  
+  /**
+   * Tests the add and search pages of the TextEx application. Requires that the login system works.
+   */
   @Test
   public void testAddSearchPage() {
-    running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
-      public void invoke(TestBrowser browser) {
-        // Need to login to access the page
-        RegisterPage registerPage = new RegisterPage(browser.getDriver(), 3333);
-        browser.goTo(registerPage);
-        registerPage.addTestStudent();
-        registerPage.loginAsTest();
-        
-        // Try adding some valid and invalid books
-        AddPage addPage = new AddPage(browser.getDriver(), 3333);
-        browser.goTo(addPage);
-        addPage.isAt();
-        addPage.validAdd();
-        addPage.invalidAdd();
-        addPage.gotoSearch();
-        
-        // Make sure the books show up in the search
-        SearchPage searchPage = new SearchPage(browser.getDriver(), 3333);
-        browser.goTo(searchPage);
-        searchPage.testSearch();
-      }
-    });
+    running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
+        new Callback<TestBrowser>() {
+          public void invoke(TestBrowser browser) {
+            // Need to login to access the page
+            RegisterPage registerPage = new RegisterPage(browser.getDriver(), 3333);
+            browser.goTo(registerPage);
+            registerPage.addTestStudent();
+            registerPage.loginAsTest();
+
+            // Try adding some valid and invalid books
+            AddPage addPage = new AddPage(browser.getDriver(), 3333);
+            browser.goTo(addPage);
+            addPage.isAt();
+            addPage.validAdd();
+            addPage.invalidAdd();
+            addPage.gotoSearch();
+
+            // Make sure the books show up in the search
+            SearchPage searchPage = new SearchPage(browser.getDriver(), 3333);
+            browser.goTo(searchPage);
+            searchPage.testSearch();
+          }
+        });
+  }
+
+  /**
+   * Tests the index / landing page of the TextEx application.
+   */
+  @Test
+  public void testIndexPage() {
+    running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
+        new Callback<TestBrowser>() {
+          public void invoke(TestBrowser browser) {
+            IndexPage homePage = new IndexPage(browser.getDriver(), 3333);
+            browser.goTo(homePage);
+            homePage.isAt();
+            homePage.gotoRegister();
+          }
+        });
+  }
+
+  /**
+   * Tests the register page of the TextEx application.
+   */
+  @Test
+  public void testRegisterPage() {
+    running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
+        new Callback<TestBrowser>() {
+          public void invoke(TestBrowser browser) {
+            RegisterPage register = new RegisterPage(browser.getDriver(), 3333);
+            browser.goTo(register);
+            register.isAt();
+            register.validInfo();
+            register.invalidInfo();
+            register.gotoHome();
+          }
+        });
   }
 
 }

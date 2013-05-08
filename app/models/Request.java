@@ -24,10 +24,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import play.data.validation.ValidationError;
 import play.data.validation.Constraints.Min;
 import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
+import play.data.validation.ValidationError;
 import play.db.ebean.Model;
 import controllers.Condition;
 
@@ -46,25 +46,13 @@ public class Request extends Model {
   private static final long serialVersionUID = 7490409966063340450L;
 
   /**
-   * The row ID number and primary key of this {@link Request}.
+   * Gets a {@link Finder} used to query the {@link Request}s table.
+   * 
+   * @return A Finder to be used with the Requests table.
    */
-  @Id
-  private Long primaryKey;
-
-  /**
-   * The natural ID of this {@link Request}.
-   */
-  @Required
-  @MinLength(0)
-  @Column(unique = true)
-  private String requestId;
-
-  /**
-   * The {@link Student} who submitted this {@link Request}.
-   */
-  @Required
-  @ManyToOne(cascade = CascadeType.PERSIST)
-  private Student student;
+  public static Finder<Long, Request> find() {
+    return new Finder<>(Long.class, Request.class);
+  }
 
   /**
    * The {@link Book} that this {@link Request} is asking for.
@@ -86,11 +74,45 @@ public class Request extends Model {
   private double price;
 
   /**
+   * The row ID number and primary key of this {@link Request}.
+   */
+  @Id
+  private Long primaryKey;
+
+  /**
    * The number of {@link Book}s to be purchased.
    */
   @Required
   @Min(0)
   private int quantity;
+
+  /**
+   * The natural ID of this {@link Request}.
+   */
+  @Required
+  @MinLength(0)
+  @Column(unique = true)
+  private String requestId;
+
+  /**
+   * The {@link Student} who submitted this {@link Request}.
+   */
+  @Required
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Student student;
+
+  /**
+   * Creates a new {@link Request} with the given values. Uses the default condition.
+   * 
+   * @param requestId The natural ID of the Request.
+   * @param student The {@link Student} who posted the Request.
+   * @param book The {@link Book} to be purchased.
+   * @param price The target price of the Book(s).
+   * @param quantity The number Books to purchase.
+   */
+  public Request(String requestId, Student student, Book book, double price, int quantity) {
+    this(requestId, student, book, price, quantity, null);
+  }
 
   /**
    * Creates a new {@link Request} with the given values.
@@ -113,25 +135,130 @@ public class Request extends Model {
   }
 
   /**
-   * Creates a new {@link Request} with the given values. Uses the default condition.
+   * Gets the {@link #book} to be purchased.
    * 
-   * @param requestId The natural ID of the Request.
-   * @param student The {@link Student} who posted the Request.
-   * @param book The {@link Book} to be purchased.
-   * @param price The target price of the Book(s).
-   * @param quantity The number Books to purchase.
+   * @return The book to be purchased.
    */
-  public Request(String requestId, Student student, Book book, double price, int quantity) {
-    this(requestId, student, book, price, quantity, null);
+  public Book getBook() {
+    return this.book;
   }
 
   /**
-   * Gets a {@link Finder} used to query the {@link Request}s table.
+   * Gets the desired {@link #condition} of the {@link #book}.
    * 
-   * @return A Finder to be used with the Requests table.
+   * @return The desired condition of the book.
    */
-  public static Finder<Long, Request> find() {
-    return new Finder<>(Long.class, Request.class);
+  public Condition getCondition() {
+    return this.condition;
+  }
+
+  /**
+   * Gets the target {@link #price} of the {@link #book}.
+   * 
+   * @return The target price of the book.
+   */
+  public double getPrice() {
+    return this.price;
+  }
+
+  /**
+   * Gets the {@link #primaryKey} number of this {@link Request}.
+   * 
+   * @return The id number of this Request.
+   */
+  public Long getPrimaryKey() {
+    return this.primaryKey;
+  }
+
+  /**
+   * Gets the number of {@link #book}s to be purchased ({@link #quantity}).
+   * 
+   * @return The number of books to be purchased.
+   */
+  public int getQuantity() {
+    return this.quantity;
+  }
+
+  /**
+   * Gets the natural ID of this {@link Request}.
+   * 
+   * @return The current natural ID of this Request.
+   */
+  public String getRequestId() {
+    return this.requestId;
+  }
+
+  /**
+   * Gets the {@link #student} who submitted this {@link Request}.
+   * 
+   * @return The student show submitted this Request.
+   */
+  public Student getStudent() {
+    return this.student;
+  }
+
+  /**
+   * Sets the {@link #book} to be purchased.
+   * 
+   * @param book The new book.
+   */
+  public void setBook(Book book) {
+    this.book = book;
+  }
+
+  /**
+   * Updates the desired {@link #condition} of the {@link #book}.
+   * 
+   * @param condition The new desired condition of the book.
+   */
+  public void setCondition(Condition condition) {
+    this.condition = condition;
+  }
+
+  /**
+   * Updates the target {@link #price} of the {@link #book}.
+   * 
+   * @param price The new target price of the book.
+   */
+  public void setPrice(double price) {
+    this.price = price;
+  }
+
+  /**
+   * Updates the number of {@link #book}s to be purchased ({@link #quantity}).
+   * 
+   * @param quantity The new number of books to purchase.
+   */
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
+
+  /**
+   * Sets the natural ID of this {@link Request}.
+   * 
+   * @param requestId The new natural ID.
+   */
+  public void setRequestId(String requestId) {
+    this.requestId = requestId;
+  }
+
+  /**
+   * Sets the {@link #student} who submitted this {@link Request}.
+   * 
+   * @param student The new student.
+   */
+  public void setStudent(Student student) {
+    this.student = student;
+  }
+
+  /**
+   * Returns the {@link String} representation of this {@link Request}.
+   */
+  @Override
+  public String toString() {
+    return String.format("[Request %s %s %s %s %f %d]", this.requestId, this.student.toString(),
+        this.book.toString(), (this.condition == null) ? "NULL" : this.condition.toString(),
+        this.price, this.quantity);
   }
 
   /**
@@ -152,133 +279,6 @@ public class Request extends Model {
           "The price of the request must be > than 0.  Given: %f", this.price)));
     }
     return (errors.size() == 0) ? null : errors;
-  }
-
-  /**
-   * Returns the {@link String} representation of this {@link Request}.
-   */
-  @Override
-  public String toString() {
-    return String.format("[Request %s %s %s %s %f %d]", this.requestId, this.student.toString(),
-        this.book.toString(), (this.condition == null) ? "NULL" : this.condition.toString(),
-        this.price, this.quantity);
-  }
-
-  /**
-   * Gets the {@link #primaryKey} number of this {@link Request}.
-   * 
-   * @return The id number of this Request.
-   */
-  public Long getPrimaryKey() {
-    return this.primaryKey;
-  }
-
-  /**
-   * Gets the natural ID of this {@link Request}.
-   * 
-   * @return The current natural ID of this Request.
-   */
-  public String getRequestId() {
-    return this.requestId;
-  }
-
-  /**
-   * Sets the natural ID of this {@link Request}.
-   * 
-   * @param requestId The new natural ID.
-   */
-  public void setRequestId(String requestId) {
-    this.requestId = requestId;
-  }
-
-  /**
-   * Gets the {@link #student} who submitted this {@link Request}.
-   * 
-   * @return The student show submitted this Request.
-   */
-  public Student getStudent() {
-    return this.student;
-  }
-
-  /**
-   * Sets the {@link #student} who submitted this {@link Request}.
-   * 
-   * @param student The new student.
-   */
-  public void setStudent(Student student) {
-    this.student = student;
-  }
-
-  /**
-   * Gets the {@link #book} to be purchased.
-   * 
-   * @return The book to be purchased.
-   */
-  public Book getBook() {
-    return this.book;
-  }
-
-  /**
-   * Sets the {@link #book} to be purchased.
-   * 
-   * @param book The new book.
-   */
-  public void setBook(Book book) {
-    this.book = book;
-  }
-
-  /**
-   * Gets the desired {@link #condition} of the {@link #book}.
-   * 
-   * @return The desired condition of the book.
-   */
-  public Condition getCondition() {
-    return this.condition;
-  }
-
-  /**
-   * Updates the desired {@link #condition} of the {@link #book}.
-   * 
-   * @param condition The new desired condition of the book.
-   */
-  public void setCondition(Condition condition) {
-    this.condition = condition;
-  }
-
-  /**
-   * Gets the target {@link #price} of the {@link #book}.
-   * 
-   * @return The target price of the book.
-   */
-  public double getPrice() {
-    return this.price;
-  }
-
-  /**
-   * Updates the target {@link #price} of the {@link #book}.
-   * 
-   * @param price The new target price of the book.
-   */
-  public void setPrice(double price) {
-    this.price = price;
-  }
-
-  /**
-   * Gets the number of {@link #book}s to be purchased ({@link #quantity}).
-   * 
-   * @return The number of books to be purchased.
-   */
-  public int getQuantity() {
-    return this.quantity;
-  }
-
-  /**
-   * Updates the number of {@link #book}s to be purchased ({@link #quantity}).
-   * 
-   * @param quantity The new number of books to purchase.
-   */
-  public void setQuantity(int quantity) {
-    this.quantity = quantity;
   }
 
 }

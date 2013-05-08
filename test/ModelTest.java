@@ -28,8 +28,8 @@ import models.Student;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import controllers.Condition;
 import play.test.FakeApplication;
+import controllers.Condition;
 
 /**
  * Tests the models of the TextEx Play application.
@@ -122,17 +122,16 @@ public class ModelTest {
     assertEquals("Request-Student", requests.get(0).getStudent(), students.get(0));
     assertEquals("Student-Request", students.get(1).getRequests().get(0), requests.get(1));
     assertEquals("Request-Student", requests.get(1).getStudent(), students.get(1));
-    
+
     // Check deletions
     books.get(0).delete();
     assertEquals("Check deleted book", 1, Book.find().findList().size());
     requests = Request.find().findList();
     assertEquals("Check cascaded delete", 1, requests.size());
-    
+
     requests.get(0).delete();
     assertEquals("Check deleted request", 0, Request.find().findList().size());
     assertEquals("Check that delete did NOT cascade", 2, Student.find().findList().size());
-    
-    
+
   }
 }

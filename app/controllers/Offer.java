@@ -31,13 +31,18 @@ import play.mvc.Result;
 public class Offer extends Controller {
 
   /**
-   * Gets all of the {@link models.Offer}s currently in the database.
+   * Deletes the given {@link models.Offer} from the database. Does nothing if the Offer does not
+   * exist in the database.
    * 
-   * @return A 200 {@link Status} containing the information of all of the Offers in the database.
+   * @param offerId The ID of the target Offer.
+   * @return A 200 {@link Status}.
    */
-  public static Result index() {
-    List<models.Offer> offers = models.Offer.find().findList();
-    return ok((offers.size() == 0) ? "No offers" : offers.toString());
+  public static Result delete(String offerId) {
+    models.Offer offer = models.Offer.find().where().eq("offerId", offerId).findUnique();
+    if (offer != null) {
+      offer.delete();
+    }
+    return ok();
   }
 
   /**
@@ -50,6 +55,16 @@ public class Offer extends Controller {
   public static Result details(String offerId) {
     models.Offer offer = models.Offer.find().where().eq("offerId", offerId).findUnique();
     return (offer == null) ? notFound("No offer found") : ok(offer.toString());
+  }
+
+  /**
+   * Gets all of the {@link models.Offer}s currently in the database.
+   * 
+   * @return A 200 {@link Status} containing the information of all of the Offers in the database.
+   */
+  public static Result index() {
+    List<models.Offer> offers = models.Offer.find().findList();
+    return ok((offers.size() == 0) ? "No offers" : offers.toString());
   }
 
   /**
@@ -76,21 +91,6 @@ public class Offer extends Controller {
     models.Offer offer = offerForm.get();
     offer.save();
     return ok(offer.toString());
-  }
-
-  /**
-   * Deletes the given {@link models.Offer} from the database. Does nothing if the Offer does not
-   * exist in the database.
-   * 
-   * @param offerId The ID of the target Offer.
-   * @return A 200 {@link Status}.
-   */
-  public static Result delete(String offerId) {
-    models.Offer offer = models.Offer.find().where().eq("offerId", offerId).findUnique();
-    if (offer != null) {
-      offer.delete();
-    }
-    return ok();
   }
 
 }

@@ -27,14 +27,14 @@ import com.avaje.ebean.annotation.EnumValue;
  * 
  */
 public enum Condition {
+  @EnumValue("H")
+  HEAVILY_USED,
+
   @EnumValue("N")
   NEW,
 
   @EnumValue("S")
-  SLIGHTLY_USED,
-
-  @EnumValue("H")
-  HEAVILY_USED;
+  SLIGHTLY_USED;
 
   /**
    * Returns the {@link String} representation of this {@link Condition}.

@@ -39,13 +39,6 @@ public final class Helpers {
   private static boolean bindersRegistered = false;
 
   /**
-   * Private constructor to prevent instantiation of this class.
-   */
-  private Helpers() {
-    // Empty Private constructor to prevent instantiation.
-  }
-
-  /**
    * Creates a {@link String} describing the errors found in the given {@link Form}.
    * 
    * @param form The Form containing the errors.
@@ -124,5 +117,12 @@ public final class Helpers {
 
       });
     }
+  }
+
+  /**
+   * Private constructor to prevent instantiation of this class.
+   */
+  private Helpers() {
+    // Empty Private constructor to prevent instantiation.
   }
 }

@@ -19,13 +19,11 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
@@ -47,18 +45,21 @@ public class Student extends Model {
   private static final long serialVersionUID = -1729390609083717186L;
 
   /**
-   * The row ID number and primary key of this {@link Student}.
+   * Gets a {@link Finder} that can be used to query the {@link Student}s table.
+   * 
+   * @return A Finder to be used with the Students table.
    */
-  @Id
-  private Long primaryKey;
+  public static Finder<Long, Student> find() {
+    return new Finder<>(Long.class, Student.class);
+  }
 
   /**
-   * The natural ID of this {@link Student}.
+   * This {@link Student}'s email address.
    */
   @Required
+  @Email
   @MinLength(1)
-  @Column(unique = true)
-  private String studentId;
+  private String email;
 
   /**
    * This {@link Student}'s first name.
@@ -75,12 +76,10 @@ public class Student extends Model {
   private String lastName;
 
   /**
-   * This {@link Student}'s email address.
+   * The {@link Offer}s submitted by this {@link Student}.
    */
-  @Required
-  @Email
-  @MinLength(1)
-  private String email;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+  private List<Offer> offers = new ArrayList<>();
 
   /**
    * This {@link Student}'s password.
@@ -90,16 +89,24 @@ public class Student extends Model {
   private String password;
 
   /**
+   * The row ID number and primary key of this {@link Student}.
+   */
+  @Id
+  private Long primaryKey;
+
+  /**
    * The {@link Request}s submitted by this {@link Student}.
    */
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
   private List<Request> requests = new ArrayList<>();
 
   /**
-   * The {@link Offer}s submitted by this {@link Student}.
+   * The natural ID of this {@link Student}.
    */
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
-  private List<Offer> offers = new ArrayList<>();
+  @Required
+  @MinLength(1)
+  @Column(unique = true)
+  private String studentId;
 
   /**
    * Creates a new {@link Student} with the given values.
@@ -119,12 +126,147 @@ public class Student extends Model {
   }
 
   /**
-   * Gets a {@link Finder} that can be used to query the {@link Student}s table.
+   * Gets the {@link #email} address of this {@link Student}.
    * 
-   * @return A Finder to be used with the Students table.
+   * @return The email address of this Student.
    */
-  public static Finder<Long, Student> find() {
-    return new Finder<>(Long.class, Student.class);
+  public String getEmail() {
+    return this.email;
+  }
+
+  /**
+   * Gets the {@link #firstName} of this {@link Student}.
+   * 
+   * @return This Student's first name.
+   */
+  public String getFirstName() {
+    return this.firstName;
+  }
+
+  /**
+   * Gets the {@link #lastName} of this {@link Student}.
+   * 
+   * @return The last name of this Student.
+   */
+  public String getLastName() {
+    return this.lastName;
+  }
+
+  /**
+   * Gets the {@link #offers} submitted by this {@link Student}.
+   * 
+   * @return The {@link List} of offers submitted by this Student.
+   */
+  public List<Offer> getOffers() {
+    return this.offers;
+  }
+
+  /**
+   * Gets the {@link #password} of this {@link Student}.
+   * 
+   * @return The password of this Student.
+   */
+  public String getPassword() {
+    return this.password;
+  }
+
+  /**
+   * Gets the {@link #primaryKey} number of this {@link Student}.
+   * 
+   * @return The id number of this Student.
+   */
+  public Long getPrimaryKey() {
+    return this.primaryKey;
+  }
+
+  /**
+   * Gets the {@link #requests} submitted by this {@link Student}.
+   * 
+   * @return The {@link List} of requests submitted by this Student.
+   */
+  public List<Request> getRequests() {
+    return this.requests;
+  }
+
+  /**
+   * Gets the current natural ID of this {@link Student}.
+   * 
+   * @return The current natural ID of this Student.
+   */
+  public String getStudentId() {
+    return this.studentId;
+  }
+
+  /**
+   * Updates the {@link #email} address of this {@link Student}.
+   * 
+   * @param email The new email address of this Student.
+   */
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  /**
+   * Updates the {@link #firstName} of this {@link Student}.
+   * 
+   * @param firstName The new first name of this Student.
+   */
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  /**
+   * Updates the {@link #lastName} of this {@link Student}.
+   * 
+   * @param lastName The new last name of this Student.
+   */
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  /**
+   * Sets the {@link #offers} submitted by this {@link Student}.
+   * 
+   * @param offers The new offers.
+   */
+  public void setOffers(List<Offer> offers) {
+    this.offers = offers;
+  }
+
+  /**
+   * Sets the {@link #password} of this {@link Student}.
+   * 
+   * @param password The Student's new password.
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  /**
+   * Sets the {@link #requests} submitted by this {@link Student}.
+   * 
+   * @param requests The new requests.
+   */
+  public void setRequests(List<Request> requests) {
+    this.requests = requests;
+  }
+
+  /**
+   * Sets the natural ID of this {@link Student}.
+   * 
+   * @param studentId The new natural ID of this Student.
+   */
+  public void setStudentId(String studentId) {
+    this.studentId = studentId;
+  }
+
+  /**
+   * Returns the {@link String} representation of this {@link Student}.
+   */
+  @Override
+  public String toString() {
+    return String.format("[Student %s %s %s %s]", this.studentId, this.firstName, this.lastName,
+        this.email);
   }
 
   /**
@@ -140,149 +282,5 @@ public class Student extends Model {
           "A Student with ID '%s' already exists.", this.studentId)));
     }
     return (errors.size() == 0) ? null : errors;
-  }
-
-  /**
-   * Returns the {@link String} representation of this {@link Student}.
-   */
-  @Override
-  public String toString() {
-    return String.format("[Student %s %s %s %s]", this.studentId, this.firstName, this.lastName,
-        this.email);
-  }
-
-  /**
-   * Gets the {@link #firstName} of this {@link Student}.
-   * 
-   * @return This Student's first name.
-   */
-  public String getFirstName() {
-    return this.firstName;
-  }
-
-  /**
-   * Updates the {@link #firstName} of this {@link Student}.
-   * 
-   * @param firstName The new first name of this Student.
-   */
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  /**
-   * Gets the {@link #lastName} of this {@link Student}.
-   * 
-   * @return The last name of this Student.
-   */
-  public String getLastName() {
-    return this.lastName;
-  }
-
-  /**
-   * Updates the {@link #lastName} of this {@link Student}.
-   * 
-   * @param lastName The new last name of this Student.
-   */
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  /**
-   * Gets the {@link #email} address of this {@link Student}.
-   * 
-   * @return The email address of this Student.
-   */
-  public String getEmail() {
-    return this.email;
-  }
-
-  /**
-   * Updates the {@link #email} address of this {@link Student}.
-   * 
-   * @param email The new email address of this Student.
-   */
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  /**
-   * Gets the {@link #requests} submitted by this {@link Student}.
-   * 
-   * @return The {@link List} of requests submitted by this Student.
-   */
-  public List<Request> getRequests() {
-    return this.requests;
-  }
-
-  /**
-   * Sets the {@link #requests} submitted by this {@link Student}.
-   * 
-   * @param requests The new requests.
-   */
-  public void setRequests(List<Request> requests) {
-    this.requests = requests;
-  }
-
-  /**
-   * Gets the {@link #offers} submitted by this {@link Student}.
-   * 
-   * @return The {@link List} of offers submitted by this Student.
-   */
-  public List<Offer> getOffers() {
-    return this.offers;
-  }
-
-  /**
-   * Sets the {@link #offers} submitted by this {@link Student}.
-   * 
-   * @param offers The new offers.
-   */
-  public void setOffers(List<Offer> offers) {
-    this.offers = offers;
-  }
-
-  /**
-   * Gets the {@link #primaryKey} number of this {@link Student}.
-   * 
-   * @return The id number of this Student.
-   */
-  public Long getPrimaryKey() {
-    return this.primaryKey;
-  }
-
-  /**
-   * Gets the current natural ID of this {@link Student}.
-   * 
-   * @return The current natural ID of this Student.
-   */
-  public String getStudentId() {
-    return this.studentId;
-  }
-
-  /**
-   * Sets the natural ID of this {@link Student}.
-   * 
-   * @param studentId The new natural ID of this Student.
-   */
-  public void setStudentId(String studentId) {
-    this.studentId = studentId;
-  }
-
-  /**
-   * Gets the {@link #password} of this {@link Student}.
-   * 
-   * @return The password of this Student.
-   */
-  public String getPassword() {
-    return this.password;
-  }
-
-  /**
-   * Sets the {@link #password} of this {@link Student}.
-   * 
-   * @param password The Student's new password.
-   */
-  public void setPassword(String password) {
-    this.password = password;
   }
 }
